@@ -75,10 +75,19 @@ video {
 }
 
 @font-face {
-  font-family: "Custom";
-  src: url("./assets/fonts/SpaceGrotesk.ttf") format("TrueType");
+  font-family: "primary";
+  src: url("./assets/fonts/Inter.ttf") format("TrueType");
 }
 
+@font-face {
+  font-family: "secondary";
+  src: url("./assets/fonts/Roboto.ttf") format("TrueType");
+}
+
+@theme {
+  --font-Default: primary, mono, Consolas;
+  --font-Heading: secondary, mono, Consolas;
+}
 
 /* Width */
 ::-webkit-scrollbar {
@@ -117,4 +126,12 @@ video {
 
 a[href]:any-link {
   text-decoration: none;
+}
+
+.landingbg {
+  background-image: url("./Landing-page.jpg");
+  background-position: center;
+  background-repeat: no-repeat;
+  object-fit: contain;
+  opacity: 5%;
 }
