@@ -1,12 +1,5 @@
 @import "tailwindcss";
 
-@theme {
-  --color-text: oklch(94.37% 0.012 156.99);
-  --color-background: oklch(12.00% 0.014 153.40);
-  --color-primary: oklch(67.91% 0.147 151.44);
-  --color-secondary: oklch(42.42% 0.083 152.14);
-  --color-accent: oklch(37.81% 0.103 148.77);
-}
 
 @theme {
   --breakpoint-sm: 350px;
@@ -18,7 +11,15 @@
   --color-primary: 191, 144, 219;
   --color-secondary: 95, 31, 133;
   --color-accent: 33, 169, 182;
-} */
+  } */
+
+@theme {
+  --color-text: oklch(94.37% 0.012 156.99);
+  --color-background: oklch(12.00% 0.014 153.40);
+  --color-primary: oklch(67.91% 0.147 151.44);
+  --color-secondary: oklch(42.42% 0.083 152.14);
+  --color-accent: oklch(37.81% 0.103 148.77);
+}
 
 html.light {
   --color-text: oklch(20.22% 0.018 155.31);
@@ -28,46 +29,6 @@ html.light {
   --color-accent: oklch(91.86% 0.097 155.75);
 }
 
-html.orange_light {
-  --color-text: oklch(20.17% 0.028 80.63);
-  --color-background: oklch(98.66% 0.005 67.76);
-  --color-primary: oklch(74.11% 0.135 85.87);
-  --color-secondary: oklch(87.32% 0.125 127.69);
-  --color-accent: oklch(81.85% 0.175 134.94);
-}
-
-html.brown_light {
-  --color-text: oklch(15.26% 0.011 29.62);
-  --color-background: oklch(98.22% 0.004 17.23);
-  --color-primary: oklch(58.88% 0.090 24.60);
-  --color-secondary: oklch(76.63% 0.051 24.50);
-  --color-accent: oklch(72.86% 0.120 24.81);
-}
-
-html.brown_dark {
-
-  --color-text: oklch(95.95% 0.007 28.83);
-  --color-background: oklch(10.68% 0.012 19.26);
-  --color-primary: oklch(53.92% 0.092 24.95);
-  --color-secondary: oklch(36.71% 0.063 26.20);
-  --color-accent: oklch(39.31% 0.133 28.84);
-}
-
-html.cyan_light {
-  --color-text: oklch(15.90% 0.014 195.80);
-  --color-background: oklch(98.28% 0.007 197.04);
-  --color-primary: oklch(80.09% 0.129 191.13);
-  --color-secondary: oklch(92.20% 0.077 194.89);
-  --color-accent: oklch(87.76% 0.137 191.49);
-}
-
-html.cyan_dark {
-  --color-text: oklch(97.54% 0.010 197.00);
-  --color-background: oklch(14.09% 0.013 195.76);
-  --color-primary: oklch(77.18% 0.127 190.98);
-  --color-secondary: oklch(41.74% 0.069 192.07);
-  --color-accent: oklch(71.57% 0.122 190.68);
-}
 
 img,
 video {
@@ -81,12 +42,12 @@ video {
 
 @font-face {
   font-family: "secondary";
-  src: url("./assets/fonts/Roboto.ttf") format("TrueType");
+  src: url("./assets/fonts/JosefinSans.ttf") format("TrueType");
 }
 
 @theme {
-  --font-Default: primary, mono, Consolas;
-  --font-Heading: secondary, mono, Consolas;
+  --font-Heading: primary, mono, Consolas;
+  --font-Default: secondary, mono, Consolas;
 }
 
 /* Width */
@@ -134,4 +95,21 @@ a[href]:any-link {
   background-repeat: no-repeat;
   object-fit: contain;
   opacity: 5%;
+}
+
+
+@media (max-width: 350px) {
+  body * {
+    display: none;
+  }
+
+  body::before {
+    content: "Screen Size is very small";
+    display: block;
+    font-size: 30px;
+    font-weight: bold;
+    text-align: center;
+    margin-top: 50vh;
+    color: red;
+  }
 }

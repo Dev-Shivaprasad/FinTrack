@@ -12,7 +12,7 @@ public class LoginController(DBcontext Logindb) : ControllerBase
     [HttpPost]
     public ActionResult<bool> ValidateLogin([FromBody] LoginModel Data)
     {
-        var userExists = Logindb.Users.Where(u => u.Email == Data.Email && u.PasswordHash == Data.PasswordHash);
+        var userExists = Logindb.Users.Where(u => u.Email == Data.Email && u.PasswordHash == Data.Password);
 
         return userExists.Count() > 0 ? true : false;
     }

@@ -1,11 +1,11 @@
 export default function BudgetingTool() {
   return (
-    <div className="flex justify-center items-center min-h-screen bg-gradient-to-r from-green-800 to-green-800 p-6">
-      <div className="grid md:grid-cols-2 items-center max-w-5xl bg-white shadow-lg rounded-lg p-10">
+    <div className="flex justify-center items-center min-h-screen bg-background p-6">
+      <div className="grid md:grid-cols-2 items-center max-w-5xl bg-text shadow-lg rounded-lg p-10">
         <div>
-          <h2 className="text-4xl font-bold text-gray-800">
+          <h2 className="text-4xl font-bold font-Heading text-secondary">
             Budgeting Tools: <br />
-            <span className="text-gray-700">Set and Achieve Goals</span>
+            <span>Set and Achieve Goals</span>
           </h2>
           <p className="mt-4 text-gray-600">
             Set financial goals and create budgets for different categories.
@@ -21,10 +21,10 @@ export default function BudgetingTool() {
               "Achieve!",
             ].map((step, index) => (
               <div key={index} className="flex items-center">
-                <div className="bg-green-100 text-green-800 font-bold text-xl w-12 h-12 flex items-center justify-center rounded-lg shadow-md">
+                <div className="bg-primary/20 text-secondary font-bold text-xl w-12 h-12 flex items-center justify-center rounded-lg shadow-md">
                   {index + 1}
                 </div>
-                <p className="ml-4 text-lg text-gray-700">{step}</p>
+                <p className="ml-4 text-lg text-accent">{step}</p>
               </div>
             ))}
           </div>
