@@ -6,7 +6,7 @@ using Microsoft.EntityFrameworkCore.Migrations;
 namespace FinTrack.Migrations
 {
     /// <inheritdoc />
-    public partial class init : Migration
+    public partial class inital : Migration
     {
         /// <inheritdoc />
         protected override void Up(MigrationBuilder migrationBuilder)
@@ -30,8 +30,7 @@ namespace FinTrack.Migrations
                 name: "Budgets",
                 columns: table => new
                 {
-                    BudgetId = table.Column<int>(type: "int", nullable: false)
-                        .Annotation("SqlServer:Identity", "1, 1"),
+                    BudgetId = table.Column<Guid>(type: "uniqueidentifier", nullable: false, defaultValueSql: "NEWSEQUENTIALID()"),
                     UserId = table.Column<Guid>(type: "uniqueidentifier", nullable: false),
                     MonthYear = table.Column<string>(type: "nvarchar(max)", nullable: false),
                     Category = table.Column<string>(type: "nvarchar(max)", nullable: false),
@@ -53,8 +52,7 @@ namespace FinTrack.Migrations
                 name: "Debts",
                 columns: table => new
                 {
-                    DebtId = table.Column<int>(type: "int", nullable: false)
-                        .Annotation("SqlServer:Identity", "1, 1"),
+                    DebtId = table.Column<Guid>(type: "uniqueidentifier", nullable: false, defaultValueSql: "NEWSEQUENTIALID()"),
                     UserId = table.Column<Guid>(type: "uniqueidentifier", nullable: false),
                     Lender = table.Column<string>(type: "nvarchar(max)", nullable: false),
                     AmountOwed = table.Column<decimal>(type: "decimal(18,2)", nullable: false),
@@ -77,8 +75,7 @@ namespace FinTrack.Migrations
                 name: "Expenses",
                 columns: table => new
                 {
-                    ExpenseId = table.Column<int>(type: "int", nullable: false)
-                        .Annotation("SqlServer:Identity", "1, 1"),
+                    ExpenseId = table.Column<Guid>(type: "uniqueidentifier", nullable: false, defaultValueSql: "NEWSEQUENTIALID()"),
                     UserId = table.Column<Guid>(type: "uniqueidentifier", nullable: false),
                     Category = table.Column<string>(type: "nvarchar(max)", nullable: false),
                     Amount = table.Column<decimal>(type: "decimal(18,2)", nullable: false),
@@ -101,8 +98,7 @@ namespace FinTrack.Migrations
                 name: "Incomes",
                 columns: table => new
                 {
-                    IncomeId = table.Column<int>(type: "int", nullable: false)
-                        .Annotation("SqlServer:Identity", "1, 1"),
+                    IncomeId = table.Column<Guid>(type: "uniqueidentifier", nullable: false, defaultValueSql: "NEWSEQUENTIALID()"),
                     UserId = table.Column<Guid>(type: "uniqueidentifier", nullable: false),
                     Source = table.Column<string>(type: "nvarchar(max)", nullable: false),
                     Amount = table.Column<decimal>(type: "decimal(18,2)", nullable: false),
@@ -123,8 +119,7 @@ namespace FinTrack.Migrations
                 name: "Investments",
                 columns: table => new
                 {
-                    InvestmentId = table.Column<int>(type: "int", nullable: false)
-                        .Annotation("SqlServer:Identity", "1, 1"),
+                    InvestmentId = table.Column<Guid>(type: "uniqueidentifier", nullable: false, defaultValueSql: "NEWSEQUENTIALID()"),
                     UserId = table.Column<Guid>(type: "uniqueidentifier", nullable: false),
                     Type = table.Column<string>(type: "nvarchar(max)", nullable: false),
                     Amount = table.Column<decimal>(type: "decimal(18,2)", nullable: false),
@@ -146,8 +141,7 @@ namespace FinTrack.Migrations
                 name: "Savings",
                 columns: table => new
                 {
-                    SavingId = table.Column<int>(type: "int", nullable: false)
-                        .Annotation("SqlServer:Identity", "1, 1"),
+                    SavingId = table.Column<Guid>(type: "uniqueidentifier", nullable: false, defaultValueSql: "NEWSEQUENTIALID()"),
                     UserId = table.Column<Guid>(type: "uniqueidentifier", nullable: false),
                     GoalName = table.Column<string>(type: "nvarchar(max)", nullable: false),
                     TargetAmount = table.Column<decimal>(type: "decimal(18,2)", nullable: false),
@@ -169,8 +163,7 @@ namespace FinTrack.Migrations
                 name: "Transactions",
                 columns: table => new
                 {
-                    TransactionId = table.Column<int>(type: "int", nullable: false)
-                        .Annotation("SqlServer:Identity", "1, 1"),
+                    TransactionId = table.Column<Guid>(type: "uniqueidentifier", nullable: false, defaultValueSql: "NEWSEQUENTIALID()"),
                     UserId = table.Column<Guid>(type: "uniqueidentifier", nullable: false),
                     Type = table.Column<string>(type: "nvarchar(max)", nullable: false),
                     Amount = table.Column<decimal>(type: "decimal(18,2)", nullable: false),

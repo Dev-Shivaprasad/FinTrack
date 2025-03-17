@@ -12,8 +12,8 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace FinTrack.Migrations
 {
     [DbContext(typeof(DBcontext))]
-    [Migration("20250314123140_init")]
-    partial class init
+    [Migration("20250316073313_inital")]
+    partial class inital
     {
         /// <inheritdoc />
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
@@ -25,13 +25,12 @@ namespace FinTrack.Migrations
 
             SqlServerModelBuilderExtensions.UseIdentityColumns(modelBuilder);
 
-            modelBuilder.Entity("FinTrack.Model.BudgetModel", b =>
+            modelBuilder.Entity("FinTrack.Model.BudgetEntity", b =>
                 {
-                    b.Property<int>("BudgetId")
+                    b.Property<Guid>("BudgetId")
                         .ValueGeneratedOnAdd()
-                        .HasColumnType("int");
-
-                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("BudgetId"));
+                        .HasColumnType("uniqueidentifier")
+                        .HasDefaultValueSql("NEWSEQUENTIALID()");
 
                     b.Property<decimal>("AllocatedAmount")
                         .HasColumnType("decimal(18,2)");
@@ -59,13 +58,12 @@ namespace FinTrack.Migrations
                     b.ToTable("Budgets");
                 });
 
-            modelBuilder.Entity("FinTrack.Model.DebtModel", b =>
+            modelBuilder.Entity("FinTrack.Model.DebtEntity", b =>
                 {
-                    b.Property<int>("DebtId")
+                    b.Property<Guid>("DebtId")
                         .ValueGeneratedOnAdd()
-                        .HasColumnType("int");
-
-                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("DebtId"));
+                        .HasColumnType("uniqueidentifier")
+                        .HasDefaultValueSql("NEWSEQUENTIALID()");
 
                     b.Property<decimal>("AmountOwed")
                         .HasColumnType("decimal(18,2)");
@@ -95,13 +93,12 @@ namespace FinTrack.Migrations
                     b.ToTable("Debts");
                 });
 
-            modelBuilder.Entity("FinTrack.Model.ExpenseModel", b =>
+            modelBuilder.Entity("FinTrack.Model.ExpenseEntity", b =>
                 {
-                    b.Property<int>("ExpenseId")
+                    b.Property<Guid>("ExpenseId")
                         .ValueGeneratedOnAdd()
-                        .HasColumnType("int");
-
-                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("ExpenseId"));
+                        .HasColumnType("uniqueidentifier")
+                        .HasDefaultValueSql("NEWSEQUENTIALID()");
 
                     b.Property<decimal>("Amount")
                         .HasColumnType("decimal(18,2)");
@@ -131,13 +128,12 @@ namespace FinTrack.Migrations
                     b.ToTable("Expenses");
                 });
 
-            modelBuilder.Entity("FinTrack.Model.IncomeModel", b =>
+            modelBuilder.Entity("FinTrack.Model.IncomeEntity", b =>
                 {
-                    b.Property<int>("IncomeId")
+                    b.Property<Guid>("IncomeId")
                         .ValueGeneratedOnAdd()
-                        .HasColumnType("int");
-
-                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("IncomeId"));
+                        .HasColumnType("uniqueidentifier")
+                        .HasDefaultValueSql("NEWSEQUENTIALID()");
 
                     b.Property<decimal>("Amount")
                         .HasColumnType("decimal(18,2)");
@@ -161,13 +157,12 @@ namespace FinTrack.Migrations
                     b.ToTable("Incomes");
                 });
 
-            modelBuilder.Entity("FinTrack.Model.InvestmentModel", b =>
+            modelBuilder.Entity("FinTrack.Model.InvestmentEntity", b =>
                 {
-                    b.Property<int>("InvestmentId")
+                    b.Property<Guid>("InvestmentId")
                         .ValueGeneratedOnAdd()
-                        .HasColumnType("int");
-
-                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("InvestmentId"));
+                        .HasColumnType("uniqueidentifier")
+                        .HasDefaultValueSql("NEWSEQUENTIALID()");
 
                     b.Property<decimal>("Amount")
                         .HasColumnType("decimal(18,2)");
@@ -194,13 +189,12 @@ namespace FinTrack.Migrations
                     b.ToTable("Investments");
                 });
 
-            modelBuilder.Entity("FinTrack.Model.SavingsModel", b =>
+            modelBuilder.Entity("FinTrack.Model.SavingsEntity", b =>
                 {
-                    b.Property<int>("SavingId")
+                    b.Property<Guid>("SavingId")
                         .ValueGeneratedOnAdd()
-                        .HasColumnType("int");
-
-                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("SavingId"));
+                        .HasColumnType("uniqueidentifier")
+                        .HasDefaultValueSql("NEWSEQUENTIALID()");
 
                     b.Property<DateTime>("CreatedAt")
                         .ValueGeneratedOnAdd()
@@ -227,13 +221,12 @@ namespace FinTrack.Migrations
                     b.ToTable("Savings");
                 });
 
-            modelBuilder.Entity("FinTrack.Model.TransactionsModel", b =>
+            modelBuilder.Entity("FinTrack.Model.TransactionsEntity", b =>
                 {
-                    b.Property<int>("TransactionId")
+                    b.Property<Guid>("TransactionId")
                         .ValueGeneratedOnAdd()
-                        .HasColumnType("int");
-
-                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("TransactionId"));
+                        .HasColumnType("uniqueidentifier")
+                        .HasDefaultValueSql("NEWSEQUENTIALID()");
 
                     b.Property<decimal>("Amount")
                         .HasColumnType("decimal(18,2)");
@@ -264,7 +257,7 @@ namespace FinTrack.Migrations
                     b.ToTable("Transactions");
                 });
 
-            modelBuilder.Entity("FinTrack.Model.UserModel", b =>
+            modelBuilder.Entity("FinTrack.Model.UserEntity", b =>
                 {
                     b.Property<Guid>("UserId")
                         .ValueGeneratedOnAdd()
@@ -293,9 +286,9 @@ namespace FinTrack.Migrations
                     b.ToTable("Users");
                 });
 
-            modelBuilder.Entity("FinTrack.Model.BudgetModel", b =>
+            modelBuilder.Entity("FinTrack.Model.BudgetEntity", b =>
                 {
-                    b.HasOne("FinTrack.Model.UserModel", "User")
+                    b.HasOne("FinTrack.Model.UserEntity", "User")
                         .WithMany()
                         .HasForeignKey("UserId")
                         .OnDelete(DeleteBehavior.Cascade)
@@ -304,9 +297,9 @@ namespace FinTrack.Migrations
                     b.Navigation("User");
                 });
 
-            modelBuilder.Entity("FinTrack.Model.DebtModel", b =>
+            modelBuilder.Entity("FinTrack.Model.DebtEntity", b =>
                 {
-                    b.HasOne("FinTrack.Model.UserModel", "User")
+                    b.HasOne("FinTrack.Model.UserEntity", "User")
                         .WithMany()
                         .HasForeignKey("UserId")
                         .OnDelete(DeleteBehavior.Cascade)
@@ -315,9 +308,9 @@ namespace FinTrack.Migrations
                     b.Navigation("User");
                 });
 
-            modelBuilder.Entity("FinTrack.Model.ExpenseModel", b =>
+            modelBuilder.Entity("FinTrack.Model.ExpenseEntity", b =>
                 {
-                    b.HasOne("FinTrack.Model.UserModel", "User")
+                    b.HasOne("FinTrack.Model.UserEntity", "User")
                         .WithMany()
                         .HasForeignKey("UserId")
                         .OnDelete(DeleteBehavior.Cascade)
@@ -326,9 +319,9 @@ namespace FinTrack.Migrations
                     b.Navigation("User");
                 });
 
-            modelBuilder.Entity("FinTrack.Model.IncomeModel", b =>
+            modelBuilder.Entity("FinTrack.Model.IncomeEntity", b =>
                 {
-                    b.HasOne("FinTrack.Model.UserModel", "User")
+                    b.HasOne("FinTrack.Model.UserEntity", "User")
                         .WithMany()
                         .HasForeignKey("UserId")
                         .OnDelete(DeleteBehavior.Cascade)
@@ -337,9 +330,9 @@ namespace FinTrack.Migrations
                     b.Navigation("User");
                 });
 
-            modelBuilder.Entity("FinTrack.Model.InvestmentModel", b =>
+            modelBuilder.Entity("FinTrack.Model.InvestmentEntity", b =>
                 {
-                    b.HasOne("FinTrack.Model.UserModel", "User")
+                    b.HasOne("FinTrack.Model.UserEntity", "User")
                         .WithMany()
                         .HasForeignKey("UserId")
                         .OnDelete(DeleteBehavior.Cascade)
@@ -348,9 +341,9 @@ namespace FinTrack.Migrations
                     b.Navigation("User");
                 });
 
-            modelBuilder.Entity("FinTrack.Model.SavingsModel", b =>
+            modelBuilder.Entity("FinTrack.Model.SavingsEntity", b =>
                 {
-                    b.HasOne("FinTrack.Model.UserModel", "User")
+                    b.HasOne("FinTrack.Model.UserEntity", "User")
                         .WithMany()
                         .HasForeignKey("UserId")
                         .OnDelete(DeleteBehavior.Cascade)
@@ -359,9 +352,9 @@ namespace FinTrack.Migrations
                     b.Navigation("User");
                 });
 
-            modelBuilder.Entity("FinTrack.Model.TransactionsModel", b =>
+            modelBuilder.Entity("FinTrack.Model.TransactionsEntity", b =>
                 {
-                    b.HasOne("FinTrack.Model.UserModel", "User")
+                    b.HasOne("FinTrack.Model.UserEntity", "User")
                         .WithMany()
                         .HasForeignKey("UserId")
                         .OnDelete(DeleteBehavior.Cascade)

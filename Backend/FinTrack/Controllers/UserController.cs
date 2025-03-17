@@ -7,47 +7,117 @@ namespace FinTrack.Controllers
 {
     [Route("api/[controller]")]
     [ApiController]
-    public class UserController(DBcontext _context) : ControllerBase
+    public class UserController(DBcontext Userreg) : ControllerBase
     {
         [HttpGet]
         public async Task<ActionResult<IEnumerable<UserModel>>> GetUsers()
         {
-            return await _context.Users.ToListAsync();
+            try
+            {
+                return await Userreg.Users.ToListAsync();
+            }
+            catch (Exception ex)
+            {
+                return StatusCode(500, new { message = "An error occurred while fetching users.", error = ex.Message });
+            }
         }
 
         [HttpGet("{id}")]
         public async Task<ActionResult<UserModel>> GetUser(Guid id)
         {
-            var user = await _context.Users.FindAsync(id);
-            if (user == null) return NotFound();
-            return user;
+            try
+            {
+                var user = await Userreg.Users.FindAsync(id);
+                if (user == null) return NotFound(new { message = "User not found." });
+                return user;
+            }
+            catch (Exception ex)
+            {
+                return StatusCode(500,
+                    new { message = "An error occurred while fetching the user.", error = ex.Message });
+            }
         }
 
         [HttpPost]
         public async Task<ActionResult<UserModel>> PostUser(UserModel user)
         {
-            _context.Users.Add(user);
-            await _context.SaveChangesAsync();
-            return CreatedAtAction("GetUser", new { id = user.UserId }, user);
+            if (user == null) return BadRequest(new { message = "Invalid user data." });
+
+            try
+            {
+                Userreg.Users.Add(user);
+                await Userreg.SaveChangesAsync();
+                return CreatedAtAction(nameof(GetUser), new { id = user.UserId }, user);
+            }
+            catch (Exception ex)
+            {
+                return StatusCode(500,
+                    new { message = "An error occurred while creating the user.", error = ex.Message });
+            }
         }
 
         [HttpPut("{id}")]
         public async Task<IActionResult> PutUser(Guid id, UserModel user)
         {
-            if (id != user.UserId) return BadRequest();
-            _context.Entry(user).State = EntityState.Modified;
-            await _context.SaveChangesAsync();
-            return NoContent();
+            
+           
+            if (user == null) 
+                return BadRequest(new { message = "Invalid user data." });
+
+            try
+            {
+                var existingUser = await Userreg.Users.FindAsync(id);
+                if (existingUser == null)
+                    return NotFound(new { message = "User not found." });
+
+                // Preserve CreatedAt
+                user.CreatedAt = existingUser.CreatedAt;
+
+                // Update only necessary fields (DO NOT replace the whole entity)
+                existingUser.Name = user.Name;
+                existingUser.Email = user.Email;
+                existingUser.PasswordHash = user.PasswordHash;
+        
+                await Userreg.SaveChangesAsync();
+                return Ok(new { message = "User updated successfully." });
+            }
+            catch (DbUpdateConcurrencyException)
+            {
+                if (!await UserExists(id))
+                    return NotFound(new { message = "User not found." });
+
+                throw;
+            }
+            catch (Exception ex)
+            {
+                return StatusCode(StatusCodes.Status500InternalServerError,
+                    new { message = "An error occurred while updating the user.", error = ex.Message });
+            }
         }
 
         [HttpDelete("{id}")]
         public async Task<IActionResult> DeleteUser(Guid id)
         {
-            var user = await _context.Users.FindAsync(id);
-            if (user == null) return NotFound();
-            _context.Users.Remove(user);
-            await _context.SaveChangesAsync();
-            return NoContent();
+            try
+            {
+                var user = await Userreg.Users.FindAsync(id);
+                if (user == null) return NotFound(new { message = "User not found." });
+                
+
+                Userreg.Users.Remove(user);
+                await Userreg.SaveChangesAsync();
+                return NoContent();
+            }
+            catch (Exception ex)
+            {
+                return StatusCode(500,
+                    new { message = "An error occurred while deleting the user.", error = ex.Message });
+            }
+        }
+
+        private async Task<bool> UserExists(Guid id)
+        {
+            return await Userreg.Users.AnyAsync(u => u.UserId == id);
         }
     }
 }
