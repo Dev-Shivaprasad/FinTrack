@@ -8,6 +8,7 @@ export default function Customroute() {
       <Routes>
         <Route path="/" element={<App />} />
         <Route path="/login" element={<LoginPage />} />
+        <Route path="/register" element={<LoginPage />} />
       </Routes>
     </Router>
   );
