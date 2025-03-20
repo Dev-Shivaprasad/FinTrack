@@ -7,7 +7,12 @@ interface Headingprops {
 
 export default function Heading({ Data, className }: Headingprops) {
   return (
-    <h1 className={cn("text-4xl md:text-6xl font-bold mb-4 font-Heading", className)}>
+    <h1
+      className={cn(
+        "text-4xl md:text-6xl font-bold mb-4 font-Heading",
+        className
+      )}
+    >
       {Data}
     </h1>
   );

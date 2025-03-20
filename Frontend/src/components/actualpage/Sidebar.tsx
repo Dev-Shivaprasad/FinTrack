@@ -4,18 +4,22 @@ import {
   FiBarChart,
   FiChevronDown,
   FiChevronsRight,
-  FiDollarSign,
   FiHome,
-  FiMonitor,
-  FiShoppingCart,
-  FiTag,
-  FiUsers,
 } from "react-icons/fi";
+import { FaMoneyBillWave } from "react-icons/fa";
+import {
+  MdAttachMoney,
+  MdOutlineSavings,
+  MdOutlineAccountBalanceWallet,
+} from "react-icons/md";
+import { BiTrendingUp, BiTransfer } from "react-icons/bi";
+import { AiOutlineFundProjectionScreen } from "react-icons/ai";
 import { motion } from "motion/react";
+import { cn } from "../utils/utils";
 
 export const Example = () => {
   return (
-    <div className="flex bg-indigo-50">
+    <div className="flex bg-background">
       <Sidebar />
       <ExampleContent />
     </div>
@@ -29,7 +33,7 @@ const Sidebar = () => {
   return (
     <motion.nav
       layout
-      className="sticky top-0 h-screen shrink-0 border-r border-slate-300 bg-white p-2"
+      className="sticky top-0 h-screen shrink-0 border-r border-accent bg-primary p-2"
       style={{
         width: open ? "225px" : "fit-content",
       }}
@@ -39,50 +43,64 @@ const Sidebar = () => {
       <div className="space-y-1">
         <Option
           Icon={FiHome}
-          title="Dashboard"
+          title="Home"
           selected={selected}
           setSelected={setSelected}
           open={open}
         />
         <Option
-          Icon={FiDollarSign}
-          title="Sales"
+          Icon={MdOutlineAccountBalanceWallet}
+          title="Budgets"
           selected={selected}
           setSelected={setSelected}
           open={open}
           notifs={3}
         />
         <Option
-          Icon={FiMonitor}
-          title="View Site"
+          Icon={BiTrendingUp}
+          title="Debts"
           selected={selected}
           setSelected={setSelected}
           open={open}
         />
         <Option
-          Icon={FiShoppingCart}
-          title="Products"
+          Icon={FaMoneyBillWave}
+          title="Expenses"
           selected={selected}
           setSelected={setSelected}
           open={open}
         />
         <Option
-          Icon={FiTag}
-          title="Tags"
+          Icon={MdAttachMoney}
+          title="Incomes"
+          selected={selected}
+          setSelected={setSelected}
+          open={open}
+        />
+        <Option
+          Icon={AiOutlineFundProjectionScreen}
+          title="Investments"
+          selected={selected}
+          setSelected={setSelected}
+          open={open}
+        />
+        <Option
+          Icon={MdOutlineSavings}
+          title="Savings"
+          selected={selected}
+          setSelected={setSelected}
+          open={open}
+        />
+        <Option
+          Icon={BiTransfer}
+          title="All Transactions"
           selected={selected}
           setSelected={setSelected}
           open={open}
         />
         <Option
           Icon={FiBarChart}
-          title="Analytics"
-          selected={selected}
-          setSelected={setSelected}
-          open={open}
-        />
-        <Option
-          Icon={FiUsers}
-          title="Members"
+          title="Reports"
           selected={selected}
           setSelected={setSelected}
           open={open}
@@ -113,11 +131,10 @@ const Option = ({
     <motion.button
       layout
       onClick={() => setSelected(title)}
-      className={`relative flex h-10 w-full items-center rounded-md transition-colors ${
-        selected === title
-          ? "bg-indigo-100 text-indigo-800"
-          : "text-slate-500 hover:bg-slate-100"
-      }`}
+      className={cn(
+        "relative flex h-10 text-lg w-full items-center rounded-md transition-colors",
+        selected === title ? "bg-secondary " : " hover:bg-secondary/30"
+      )}
     >
       <motion.div
         layout
@@ -146,7 +163,7 @@ const Option = ({
           }}
           style={{ y: "-50%" }}
           transition={{ delay: 0.5 }}
-          className="absolute right-2 top-1/2 size-4 rounded bg-indigo-500 text-xs text-white"
+          className="absolute right-2 top-1/2 size-4 rounded bg-text text-sm text-secondary"
         >
           {notifs}
         </motion.span>
@@ -158,7 +175,7 @@ const Option = ({
 const TitleSection = ({ open }: { open: boolean }) => {
   return (
     <div className="mb-3 border-b border-slate-300 pb-3">
-      <div className="flex cursor-pointer items-center justify-between rounded-md transition-colors hover:bg-slate-100">
+      <div className="flex cursor-pointer items-center justify-between rounded-md transition-colors hover:bg-secondary">
         <div className="flex items-center gap-2">
           <Logo />
           {open && (
@@ -168,8 +185,11 @@ const TitleSection = ({ open }: { open: boolean }) => {
               animate={{ opacity: 1, y: 0 }}
               transition={{ delay: 0.125 }}
             >
-              <span className="block text-xs font-semibold">TomIsLoading</span>
-              <span className="block text-xs text-slate-500">Pro Plan</span>
+              <span className="block text-sm font-semibold font-Heading">
+                {JSON.parse(localStorage.getItem("Cred") ?? "{}").username ||
+                  "Username"}
+              </span>
+              <span className="block text-xs text-slate-500">beta</span>
             </motion.div>
           )}
         </div>
@@ -184,25 +204,12 @@ const Logo = () => {
   return (
     <motion.div
       layout
-      className="grid size-10 shrink-0 place-content-center rounded-md bg-indigo-600"
+      className="grid text-xl font-Heading size-10 shrink-0 place-content-center rounded-md bg-accent"
     >
-      <svg
-        width="24"
-        height="auto"
-        viewBox="0 0 50 39"
-        fill="none"
-        xmlns="http://www.w3.org/2000/svg"
-        className="fill-slate-50"
-      >
-        <path
-          d="M16.4992 2H37.5808L22.0816 24.9729H1L16.4992 2Z"
-          stopColor="#000000"
-        ></path>
-        <path
-          d="M17.4224 27.102L11.4192 36H33.5008L49 13.0271H32.7024L23.2064 27.102H17.4224Z"
-          stopColor="#000000"
-        ></path>
-      </svg>
+      {/* <img width="24" height="auto" className="fill-slate-50"></img> */}
+      {JSON.parse(
+        localStorage.getItem("Cred") ?? "{}"
+      ).username?.[0].toUpperCase() || "U"}
     </motion.div>
   );
 };
@@ -218,7 +225,7 @@ const ToggleClose = ({
     <motion.button
       layout
       onClick={() => setOpen((pv) => !pv)}
-      className="absolute bottom-0 left-0 right-0 border-t border-slate-300 transition-colors hover:bg-slate-100"
+      className="absolute bottom-0 left-0 right-0 border-t border-slate-300 transition-colors hover:bg-secondary/50"
     >
       <div className="flex items-center p-2">
         <motion.div
@@ -226,7 +233,7 @@ const ToggleClose = ({
           className="grid size-10 place-content-center text-lg"
         >
           <FiChevronsRight
-            className={`transition-transform ${open && "rotate-180"}`}
+            className={cn("transition-transform", open && "rotate-180")}
           />
         </motion.div>
         {open && (

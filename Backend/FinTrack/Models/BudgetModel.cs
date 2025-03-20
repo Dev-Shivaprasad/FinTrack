@@ -12,7 +12,6 @@ namespace FinTrack.Model
         public string Category { get; set; }
         [Column(TypeName = "decimal(18,2)")] public decimal AllocatedAmount { get; set; }
         public DateTime CreatedAt { get; set; }
-        [JsonIgnore]
-        public UserModel? User { get; set; }
+        [JsonIgnore] public UserModel? User { get; set; }
     }
 }

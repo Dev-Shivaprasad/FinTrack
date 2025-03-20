@@ -7,22 +7,17 @@ const Download = () => {
         initial={{ opacity: 0, y: 30 }}
         animate={{ opacity: 1, y: 0 }}
         transition={{ duration: 0.6 }}
-        className="bg-text p-10 rounded-2xl shadow-xl max-w-3xl w-full text-center"
+        className="bg-background p-10 rounded-2xl shadow-xl max-w-3xl w-full text-center"
       >
-        <h2 className="text-3xl font-bold text-secondary font-Heading">
+        <h2 className="text-3xl font-bold text-primary font-Heading">
           Register and Start Saving Today!
         </h2>
-        <p className="text-secondary/80 mt-3">
+        <p className=" mt-3">
           Take control of your finances and start saving today.
-        </p>
-        <p className="text-secondary/70 mt-3">
+          <br/>
           Enjoy reduced stress, increased savings, and financial freedom.
         </p>
-        <Button
-          title="Let's Go"
-          className="font-Heading mt-3"
-          link="/register"
-        />
+        <Button title="Let's Go" className="font-Heading mt-3" link="/auth" />
       </motion.div>
     </div>
   );

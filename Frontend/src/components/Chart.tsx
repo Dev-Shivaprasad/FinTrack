@@ -14,16 +14,16 @@ export default function FinancialDashboard() {
       id="nxt"
       className="flex items-center justify-center min-h-screen bg-secondary p-4"
     >
-      <div className="w-full max-w-3xl bg-text p-6 shadow-xl rounded-2xl ">
-        <h2 className="text-2xl font-bold text-accent text-center font-Heading">
+      <div className="w-full max-w-3xl bg-background p-6 shadow-xl rounded-2xl ">
+        <h2 className="text-2xl font-bold text-primary text-center font-Heading">
           {" "}
           Dashboard: Your Financial Snapshot
         </h2>
-        <p className="text-primary text-center mt-2">
+        <p className="text-center mt-2">
           Your financial central hub displays total balance, income, expenses,
           and savings.{" "}
         </p>
-        <p className="text-primary text-center">
+        <p className="text-center">
           Visually engaging charts, graphs, and progress bars provide an
           at-a-glance understanding.
         </p>
@@ -59,11 +59,11 @@ export default function FinancialDashboard() {
                 className="w-4 h-4 rounded-full"
                 style={{ backgroundColor: item.color }}
               ></div>
-              <span className="text-gray-700">{item.name}</span>
+              <span className="text-primary">{item.name}</span>
             </div>
           ))}
         </div>
-        <p className="text-center text-gray-400 mt-2">
+        <p className="text-center text-text/70 mt-2">
           Users who actively track finances save an average of{" "}
           <strong>$6,000</strong> per year.
         </p>

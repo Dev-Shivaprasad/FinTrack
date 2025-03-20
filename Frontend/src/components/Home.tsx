@@ -6,7 +6,7 @@ const Finance = () => {
       <div className="relative w-full h-screen flex items-center justify-center">
         <div className="absolute inset-0 bg-cover bg-center opacity-40 bg-[url('Logo/Landing-page.jpg')]"></div>
         <div className="relative text-center px-6 md:px-12">
-          <Heading Data="Take Control of Your Finances Today!" />
+          <Heading Data="Take Control of Your Finances Today!" className="text-6xl"/>
           <p className="text-lg md:text-xl mb-6">
             Effortlessly track spending, achieve goals, and reduce financial
             stress with our intuitive budgeting app.

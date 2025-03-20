@@ -8,15 +8,15 @@ const features = [
 ];
 const UserFriendly = () => {
   return (
-    <div className="flex flex-col items-center justify-center min-h-screen bg-secondary p-6">
-      <div className="bg-text p-10 rounded-2xl shadow-xl w-full max-w-4xl">
-        <h2 className="text-3xl font-bold text-secondary text-center">
+    <div className="flex flex-col items-center justify-center min-h-screen p-6">
+      <div className="bg-secondary p-10 rounded-2xl shadow-xl w-full max-w-4xl">
+        <h2 className="text-3xl font-bold text-primary text-center">
           User-Friendly Design and Accessibility
         </h2>
-        <p className="text-accent/60 text-center mt-2">
+        <p className="text-center mt-2">
           Our app is committed to user-friendly design.
         </p>
-        <p className="text-accent/60 text-center">
+        <p className="text-center">
           {" "}
           Enjoy a clean interface, intuitive navigation, and visually appealing
           aesthetics.
@@ -34,19 +34,17 @@ const UserFriendly = () => {
                 className="flex items-center h-30 w-full max-w-lg relative"
               >
                 {index % 2 === 0 ? (
-                  <div className="w-1/2 text-right pr-6 text-primary font-medium">
+                  <div className="w-1/2 text-right pr-6 font-medium">
                     {feature.title}
                   </div>
                 ) : (
                   <div className="w-1/2"></div>
                 )}
-                <div className="w-14 h-14 flex items-center justify-center text-primary rounded-xl hover:bg-gray-200 bg-text transition">
+                <div className="w-14 h-14 flex items-center justify-center rounded-xl hover:bg-accent bg-primary transition">
                   <Icon className="w-7 h-7" />
                 </div>
                 {index % 2 !== 0 ? (
-                  <div className="w-1/2 pl-6 text-primary font-medium">
-                    {feature.title}
-                  </div>
+                  <div className="w-1/2 pl-6 font-medium">{feature.title}</div>
                 ) : (
                   <div className="w-1/2"></div>
                 )}

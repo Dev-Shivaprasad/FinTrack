@@ -39,7 +39,7 @@ namespace FinTrack.Controllers
         }
 
         [HttpPost]
-        public async Task<ActionResult<UserModel>> PostUser(UserModel user)
+        public async Task<ActionResult<object>> PostUser(UserModel user)
         {
             if (user == null) return BadRequest(new { message = "Invalid user data." });
 
@@ -47,7 +47,7 @@ namespace FinTrack.Controllers
             {
                 Userreg.Users.Add(user);
                 await Userreg.SaveChangesAsync();
-                return CreatedAtAction(nameof(GetUser), new { id = user.UserId }, user);
+                return Ok(new { message = "User created." });
             }
             catch (Exception ex)
             {
@@ -59,9 +59,7 @@ namespace FinTrack.Controllers
         [HttpPut("{id}")]
         public async Task<IActionResult> PutUser(Guid id, UserModel user)
         {
-            
-           
-            if (user == null) 
+            if (user == null)
                 return BadRequest(new { message = "Invalid user data." });
 
             try
@@ -77,7 +75,7 @@ namespace FinTrack.Controllers
                 existingUser.Name = user.Name;
                 existingUser.Email = user.Email;
                 existingUser.PasswordHash = user.PasswordHash;
-        
+
                 await Userreg.SaveChangesAsync();
                 return Ok(new { message = "User updated successfully." });
             }
@@ -102,7 +100,7 @@ namespace FinTrack.Controllers
             {
                 var user = await Userreg.Users.FindAsync(id);
                 if (user == null) return NotFound(new { message = "User not found." });
-                
+
 
                 Userreg.Users.Remove(user);
                 await Userreg.SaveChangesAsync();

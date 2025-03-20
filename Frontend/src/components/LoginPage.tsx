@@ -1,8 +1,11 @@
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import { useForm, SubmitHandler } from "react-hook-form";
 import { motion } from "motion/react";
 import axios from "axios";
 import Button from "./Button";
+import { loadtheme } from "./utils/Loadtheme";
+import { BaseURL, Login, User } from "./utils/DBLinks";
+import Goto from "./utils/GOTO";
 
 type FormData = {
   username?: string;
@@ -12,6 +15,9 @@ type FormData = {
 };
 
 const AuthForm: React.FC = () => {
+  useEffect(() => {
+    loadtheme();
+  }, []);
   const [isLogin, setIsLogin] = useState(true);
   const [showPassword, setShowPassword] = useState(false);
   const {
@@ -22,33 +28,46 @@ const AuthForm: React.FC = () => {
   } = useForm<FormData>();
 
   const onSubmit: SubmitHandler<FormData> = async (data) => {
-    try {
-      const endpoint = isLogin ? "/api/login" : "/api/register";
-      const response = await axios.post(endpoint, data);
-      alert(response.data.message);
-    } catch (error: any) {
-      alert(
-        "Error: " + (error.response?.data?.message || "Something went wrong")
-      );
-    }
+    isLogin
+      ? await axios
+          .post(BaseURL + Login.Post, {
+            email: data.email,
+            password: data.password,
+          })
+          .then((resp) => {
+            localStorage.setItem(
+              "Cred",
+              JSON.stringify({ id: resp.data.id, username: resp.data.username })
+            );
+          })
+          .then((_) => Goto({ Link: "/dashboard" }))
+      : await axios
+          .post(BaseURL + User.Post, {
+            name: data.username,
+            email: data.email,
+            passwordHash: data.confirmPassword,
+          })
+          .then((resp) => {
+            console.log(resp.data), alert(resp.data.id);
+          });
   };
 
   return (
-    <div className="flex items-center justify-center min-h-screen bg-background text-secondary p-6">
+    <div className="flex items-center justify-center min-h-screen bg-background p-6">
       <motion.div
         initial={{ opacity: 0, y: 30 }}
         animate={{ opacity: 1, y: 0 }}
         transition={{ duration: 0.5 }}
-        className="bg-text p-8 rounded-lg shadow-lg w-full sm:w-96"
+        className="bg-secondary p-8 rounded-lg shadow-lg w-full sm:w-96"
       >
-        <h2 className="text-2xl font-bold text-accent mb-6 text-center">
+        <h2 className="text-2xl font-bold text-primary mb-6 text-center">
           {isLogin ? "Login" : "Register"}
         </h2>
 
         <form onSubmit={handleSubmit(onSubmit)}>
           {!isLogin && (
             <div className="mb-4">
-              <label className="block text-primary">Username</label>
+              <label className="block">Username</label>
               <input
                 type="text"
                 {...register("username", { required: "Username is required" })}
@@ -56,7 +75,7 @@ const AuthForm: React.FC = () => {
                 placeholder="Enter username"
               />
               {errors.username && (
-                <p className="text-red-500 text-sm">
+                <p className="text-red-500 text-sm mt-1">
                   {errors.username.message}
                 </p>
               )}
@@ -64,7 +83,7 @@ const AuthForm: React.FC = () => {
           )}
 
           <div className="mb-4">
-            <label className="block text-gray-700">Email</label>
+            <label className="block ">Email</label>
             <input
               type="email"
               {...register("email", {
@@ -78,12 +97,14 @@ const AuthForm: React.FC = () => {
               placeholder="Enter email"
             />
             {errors.email && (
-              <p className="text-red-500 text-sm">{errors.email.message}</p>
+              <p className="text-red-500 text-sm mt-1">
+                {errors.email.message}
+              </p>
             )}
           </div>
 
           <div className="mb-4 relative">
-            <label className="block text-gray-700">Password</label>
+            <label className="block ">Password</label>
             <input
               type={showPassword ? "text" : "password"}
               {...register("password", {
@@ -104,13 +125,15 @@ const AuthForm: React.FC = () => {
               {showPassword ? "🙈" : "👁️"}
             </button>
             {errors.password && (
-              <p className="text-red-500 text-sm">{errors.password.message}</p>
+              <p className="text-red-500 text-sm mt-1">
+                {errors.password.message}
+              </p>
             )}
           </div>
 
           {!isLogin && (
             <div className="mb-4 relative">
-              <label className="block text-gray-700">Confirm Password</label>
+              <label className="block ">Confirm Password</label>
               <input
                 type={showPassword ? "text" : "password"}
                 {...register("confirmPassword", {
@@ -122,7 +145,7 @@ const AuthForm: React.FC = () => {
                 placeholder="Confirm password"
               />
               {errors.confirmPassword && (
-                <p className="text-red-500 text-sm">
+                <p className="text-red-500 text-sm mt-1">
                   {errors.confirmPassword.message}
                 </p>
               )}
@@ -130,14 +153,15 @@ const AuthForm: React.FC = () => {
           )}
           <Button
             title={isLogin ? "Login" : "Register"}
-            className="text-text w-full"
+            className="w-full border-primary"
+            bgcolor={false}
           />
         </form>
 
-        <p className="mt-4 text-center text-gray-600">
+        <p className="mt-4 text-center">
           {isLogin ? "Don't have an account?" : "Already have an account?"}
           <button
-            className="text-green-600 font-semibold ml-1 hover:underline"
+            className="text-primary font-semibold ml-1 hover:underline"
             onClick={() => setIsLogin(!isLogin)}
           >
             {isLogin ? "Register" : "Login"}

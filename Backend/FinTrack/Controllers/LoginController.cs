@@ -10,10 +10,11 @@ namespace FinTrack.Controllers.Controllers;
 public class LoginController(DBcontext Logindb) : ControllerBase
 {
     [HttpPost]
-    public ActionResult<bool> ValidateLogin([FromBody] LoginModel Data)
+    public ActionResult<bool> ValidateLogin([FromBody] LoginModel logininfo)
     {
-        var userExists = Logindb.Users.Where(u => u.Email == Data.Email && u.PasswordHash == Data.Password);
-
-        return userExists.Count() > 0 ? true : false;
+        var userExists = Logindb.Users.Where(u => u.Email == logininfo.Email && u.PasswordHash == logininfo.Password);
+        return userExists.Count() > 0
+            ? Ok(new { id = userExists.FirstOrDefault().UserId, username = userExists.FirstOrDefault().Name })
+            : NotFound(new { message = "User not found." });
     }
 }
