@@ -1,7 +1,7 @@
 import { BrowserRouter as Router, Routes, Route } from "react-router";
 import LoginPage from "./LoginPage";
 import App from "../App";
-import { Example } from "./actualpage/Sidebar";
+import { NavSidebar } from "./actualpage/Sidebar";
 
 export default function Customroute() {
   return (
@@ -9,7 +9,7 @@ export default function Customroute() {
       <Routes>
         <Route path="/" element={<App />} />
         <Route path="/auth" element={<LoginPage />} />
-        <Route path="/dashboard" element={<Example />} />
+        <Route path="/dashboard" element={<NavSidebar />} />
       </Routes>
     </Router>
   );

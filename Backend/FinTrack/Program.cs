@@ -6,8 +6,8 @@ var builder = WebApplication.CreateBuilder(args);
 // Add services to the container.
 builder.Services.AddDbContext<DBcontext>(opt =>
 {
-    opt.UseSqlServer(builder.Configuration.GetConnectionString("DBDESK"));
-    // opt.UseSqlServer(builder.Configuration.GetConnectionString("DBLAP"));
+    // opt.UseSqlServer(builder.Configuration.GetConnectionString("DBDESK"));
+    opt.UseSqlServer(builder.Configuration.GetConnectionString("DBLAP"));
 });
 
 builder.Services.AddControllers();

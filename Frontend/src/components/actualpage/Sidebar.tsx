@@ -17,7 +17,7 @@ import { AiOutlineFundProjectionScreen } from "react-icons/ai";
 import { motion } from "motion/react";
 import { cn } from "../utils/utils";
 
-export const Example = () => {
+export const NavSidebar = () => {
   return (
     <div className="flex bg-background">
       <Sidebar />
@@ -28,7 +28,7 @@ export const Example = () => {
 
 const Sidebar = () => {
   const [open, setOpen] = useState(true);
-  const [selected, setSelected] = useState("Dashboard");
+  const [selected, setSelected] = useState("Budgets");
 
   return (
     <motion.nav

@@ -17,13 +17,13 @@ const SavingGoal = () => {
           automate transfers to savings accounts.
         </p>
         <div className="mt-6 grid grid-cols-2 gap-4">
-          <div className="bg-accent w-full p-4 rounded-lg text-primary font-medium text-center">
+          <div className="bg-accent w-full p-4 rounded-lg font-medium text-center">
             Down Payment
           </div>
-          <div className="bg-accent w-full p-4 rounded-lg text-primary font-medium text-center">
+          <div className="bg-accent w-full p-4 rounded-lg font-medium text-center">
             Vacation
           </div>
-          <div className="bg-accent col-span-2 w-full p-4 rounded-lg text-primary font-medium text-center">
+          <div className="bg-accent col-span-2 w-full p-4 rounded-lg font-medium text-center">
             Retirement
           </div>
         </div>

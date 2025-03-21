@@ -27,6 +27,10 @@ namespace FinTrack.Model
                 .Property(u => u.CreatedAt)
                 .HasDefaultValueSql("GETDATE()");
 
+            modelBuilder.Entity<UserModel>()
+                .HasIndex(u => u.Email)
+                .IsUnique();
+
             modelBuilder.Entity<IncomeModel>()
                 .Property(i => i.IncomeId)
                 .HasDefaultValueSql("NEWSEQUENTIALID()");

@@ -1,19 +1,24 @@
 import Button from "./Button";
-import Heading from "./Heading";
 const Finance = () => {
   return (
     <>
       <div className="relative w-full h-screen flex items-center justify-center">
         <div className="absolute inset-0 bg-cover bg-center opacity-40 bg-[url('Logo/Landing-page.jpg')]"></div>
         <div className="relative text-center px-6 md:px-12">
-          <Heading Data="Take Control of Your Finances Today!" className="text-6xl"/>
-          <p className="text-lg md:text-xl mb-6">
+          <div className="text-6xl font-Heading">
+            Take Control of Your <span className="text-primary">Finances </span>
+            Today!
+          </div>
+          <p className="text-lg md:text-xl mb-6 text-wrap">
             Effortlessly track spending, achieve goals, and reduce financial
             stress with our intuitive budgeting app.
           </p>
-          <a href="#nxt">
-            <Button title="Know More" />
-          </a>
+          <div className="flex w-full justify-around items-center">
+            <a href="#nxt">
+              <Button title="Know More" />
+            </a>
+            <Button title="Get Started" className="font-Heading" link="/auth" />
+          </div>
           {/* <div className="flex items-center justify-center min-h-screen">
       <Link
       to = "/LoginPage"

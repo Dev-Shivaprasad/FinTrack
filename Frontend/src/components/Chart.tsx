@@ -31,6 +31,7 @@ export default function FinancialDashboard() {
           initial={{ opacity: 0, rotate: 50 }}
           whileInView={{ opacity: 1, rotate: 0 }}
           transition={{ delay: 0.5 }}
+          exit={{ opacity: 0, rotate: 50 }}
           className="w-full h-[300px] flex justify-center mt-6"
         >
           <ResponsiveContainer width="100%" height="100%">

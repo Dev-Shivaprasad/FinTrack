@@ -73,6 +73,7 @@ const AuthForm: React.FC = () => {
                 {...register("username", { required: "Username is required" })}
                 className="w-full px-4 py-2 border  rounded-md focus:outline-none focus:ring-2 focus:ring-primary active:ring-primary"
                 placeholder="Enter username"
+                
               />
               {errors.username && (
                 <p className="text-red-500 text-sm mt-1">
