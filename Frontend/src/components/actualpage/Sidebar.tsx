@@ -1,4 +1,4 @@
-import { Dispatch, SetStateAction, useState } from "react";
+import { Dispatch, JSX, SetStateAction, useState } from "react";
 import { IconType } from "react-icons";
 import {
   FiBarChart,
@@ -16,19 +16,71 @@ import { BiTrendingUp, BiTransfer } from "react-icons/bi";
 import { AiOutlineFundProjectionScreen } from "react-icons/ai";
 import { motion } from "motion/react";
 import { cn } from "../utils/utils";
+import FinancialDashboard from "../Chart";
+import BudgetingTool from "../BudgetingTool";
+import Download from "../Download";
+import ThemeToggle from "../Theme";
+
+const componentMap: { [key: string]: JSX.Element } = {
+  Home: <BudgetingTool />,
+  Budgets: <FinancialDashboard />,
+  Debts: <Download />,
+  Expenses: (
+    <div className="bg-primary text-accent flex justify-center items-center h-screen wfull text-6xl">
+      {" "}
+      Expense
+    </div>
+  ),
+  Incomes: (
+    <div className="bg-primary text-accent flex justify-center items-center h-screen wfull text-6xl">
+      {" "}
+      Incomes
+    </div>
+  ),
+  Investments: (
+    <div className="bg-primary text-accent flex justify-center items-center h-screen wfull text-6xl">
+      {" "}
+      Investments
+    </div>
+  ),
+  Savings: (
+    <div className="bg-primary text-accent flex justify-center items-center h-screen wfull text-6xl">
+      {" "}
+      Savings
+    </div>
+  ),
+  "All Transactions": (
+    <div className="bg-primary text-accent flex justify-center items-center h-screen wfull text-6xl">
+      {" "}
+      Transactions
+    </div>
+  ),
+  Reports: (
+    <div className="bg-primary text-accent flex justify-center items-center h-screen wfull text-6xl">
+      {" "}
+      Reports
+    </div>
+  ),
+};
 
 export const NavSidebar = () => {
+  const [selected, setSelected] = useState("Budgets");
   return (
     <div className="flex bg-background">
-      <Sidebar />
-      <ExampleContent />
+      <Sidebar selected={selected} setSelected={setSelected} />
+      <div className="flex-1">{componentMap[selected] || <div>ERROR</div>}</div>
     </div>
   );
 };
 
-const Sidebar = () => {
+const Sidebar = ({
+  selected,
+  setSelected,
+}: {
+  selected: string;
+  setSelected: Dispatch<SetStateAction<string>>;
+}) => {
   const [open, setOpen] = useState(true);
-  const [selected, setSelected] = useState("Budgets");
 
   return (
     <motion.nav
@@ -39,7 +91,7 @@ const Sidebar = () => {
       }}
     >
       <TitleSection open={open} />
-
+      <ThemeToggle />
       <div className="space-y-1">
         <Option
           Icon={FiHome}
@@ -252,4 +304,9 @@ const ToggleClose = ({
   );
 };
 
-const ExampleContent = () => <div className="h-[200vh] w-full"></div>;
+// const ExampleContent = () => (
+//   <div className="h-screen w-full transition">
+//     if (condition) {}
+//     <FinancialDashboard />
+//   </div>
+// );

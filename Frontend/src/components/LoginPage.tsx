@@ -7,6 +7,8 @@ import { loadtheme } from "./utils/Loadtheme";
 import { BaseURL, Login, User } from "./utils/DBLinks";
 import Goto from "./utils/GOTO";
 
+import CryptoJS from "crypto-js";
+
 type FormData = {
   username?: string;
   email: string;
@@ -28,11 +30,12 @@ const AuthForm: React.FC = () => {
   } = useForm<FormData>();
 
   const onSubmit: SubmitHandler<FormData> = async (data) => {
+    let hashedpassword = CryptoJS.SHA512(data.password).toString();
     isLogin
       ? await axios
           .post(BaseURL + Login.Post, {
             email: data.email,
-            password: data.password,
+            password: hashedpassword,
           })
           .then((resp) => {
             localStorage.setItem(
@@ -45,7 +48,7 @@ const AuthForm: React.FC = () => {
           .post(BaseURL + User.Post, {
             name: data.username,
             email: data.email,
-            passwordHash: data.confirmPassword,
+            passwordHash: hashedpassword,
           })
           .then((resp) => {
             console.log(resp.data), alert(resp.data.id);
@@ -73,7 +76,6 @@ const AuthForm: React.FC = () => {
                 {...register("username", { required: "Username is required" })}
                 className="w-full px-4 py-2 border  rounded-md focus:outline-none focus:ring-2 focus:ring-primary active:ring-primary"
                 placeholder="Enter username"
-                
               />
               {errors.username && (
                 <p className="text-red-500 text-sm mt-1">
