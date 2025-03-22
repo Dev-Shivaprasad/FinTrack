@@ -8,6 +8,7 @@ import { BaseURL, Login, User } from "./utils/DBLinks";
 import Goto from "./utils/GOTO";
 
 import CryptoJS from "crypto-js";
+import toast, { Toaster } from "react-hot-toast";
 
 type FormData = {
   username?: string;
@@ -26,7 +27,7 @@ const AuthForm: React.FC = () => {
     register,
     handleSubmit,
     watch,
-    formState: { errors },
+    formState: { errors, isSubmitting },
   } = useForm<FormData>();
 
   const onSubmit: SubmitHandler<FormData> = async (data) => {
@@ -44,19 +45,43 @@ const AuthForm: React.FC = () => {
             );
           })
           .then((_) => Goto({ Link: "/dashboard" }))
+          .catch(
+            (err) =>
+              `Something Went Boom : ${
+                err.status === 404
+                  ? toast.error(
+                      "User Not Found Either the Email or Password is Incorrect"
+                    )
+                  : err.status === 500
+                  ? toast.error("Server Error")
+                  : toast.error("Server Down :(")
+              }`
+          )
       : await axios
           .post(BaseURL + User.Post, {
             name: data.username,
             email: data.email,
             passwordHash: hashedpassword,
           })
-          .then((resp) => {
-            console.log(resp.data), alert(resp.data.id);
+          .then((_) => {
+            setIsLogin(!isLogin),
+              toast.success(
+                "You hace registered Successfully 😊, now Login to Get Started"
+              );
+          })
+          .catch((err) => {
+            toast.error(
+              `Something Went Boom : ${
+                err.status === 400 ? err.response.data.message : err
+              }`
+            ),
+              console.log(err);
           });
   };
 
   return (
     <div className="flex items-center justify-center min-h-screen bg-background p-6">
+      <Toaster />
       <motion.div
         initial={{ opacity: 0, y: 30 }}
         animate={{ opacity: 1, y: 0 }}
@@ -158,6 +183,7 @@ const AuthForm: React.FC = () => {
             title={isLogin ? "Login" : "Register"}
             className="w-full border-primary"
             bgcolor={false}
+            disabled={isSubmitting}
           />
         </form>
 

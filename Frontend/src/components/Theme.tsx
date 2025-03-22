@@ -1,13 +1,20 @@
 import { motion } from "motion/react";
 import { Dispatch, SetStateAction, useEffect, useState } from "react";
 import { FiMoon, FiSun } from "react-icons/fi";
+import { cn } from "./utils/utils";
 
 const TOGGLE_CLASSES =
   "text-sm font-medium flex items-center gap-2 px-3 md:pl-3 md:pr-3.5 py-3 md:py-1.5 transition-colors relative z-10";
 
 type ThemeType = "light" | "dark";
 
-export default function ThemeToggle({ className }: { className?: string }) {
+export default function ThemeToggle({
+  className,
+  hidden,
+}: {
+  className?: string;
+  hidden?: boolean;
+}) {
   // Load theme from localStorage or default to "dark"
   const [theme, setTheme] = useState<ThemeType>(
     () => (localStorage.getItem("theme") as ThemeType) || "dark"
@@ -25,7 +32,7 @@ export default function ThemeToggle({ className }: { className?: string }) {
 
   return (
     <div className={className}>
-      <SliderToggle theme={theme} setTheme={setTheme} />
+      <SliderToggle theme={theme} setTheme={setTheme} hidden={hidden} />
     </div>
   );
 }
@@ -33,8 +40,10 @@ export default function ThemeToggle({ className }: { className?: string }) {
 const SliderToggle = ({
   theme,
   setTheme,
+  hidden = true,
 }: {
   theme: ThemeType;
+  hidden?: boolean;
   setTheme: Dispatch<SetStateAction<ThemeType>>;
 }) => {
   return (
@@ -46,7 +55,14 @@ const SliderToggle = ({
         onClick={() => setTheme("light")}
       >
         <FiSun className="relative z-10 md:text-sm" />
-        <span className="relative z-10">Light</span>
+        <span
+          className={cn(
+            "relative z-10 hidden md:block",
+            hidden ? "hidden" : "block"
+          )}
+        >
+          Light
+        </span>
       </button>
       <button
         className={`${TOGGLE_CLASSES} ${
@@ -55,7 +71,14 @@ const SliderToggle = ({
         onClick={() => setTheme("dark")}
       >
         <FiMoon className="relative z-10 md:text-sm" />
-        <span className="relative z-10">Dark</span>
+        <span
+          className={cn(
+            "relative z-10 hidden md:block",
+            hidden ? "hidden" : "block"
+          )}
+        >
+          Dark
+        </span>
       </button>
       <div
         className={`absolute inset-0 z-0 flex ${

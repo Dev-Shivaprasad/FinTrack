@@ -17,5 +17,6 @@ namespace FinTrack.Model
         public DateTime CreatedAt { get; set; }
         [JsonIgnore]
         public UserModel? User { get; set; }
+     
     }
 }

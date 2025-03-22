@@ -16,59 +16,56 @@ import { BiTrendingUp, BiTransfer } from "react-icons/bi";
 import { AiOutlineFundProjectionScreen } from "react-icons/ai";
 import { motion } from "motion/react";
 import { cn } from "../utils/utils";
-import FinancialDashboard from "../Chart";
-import BudgetingTool from "../BudgetingTool";
-import Download from "../Download";
-import ThemeToggle from "../Theme";
-
+import Budgets from "./Budgets";
+import Debts from "./Debt";
+import Investments from "./Investments";
 const componentMap: { [key: string]: JSX.Element } = {
-  Home: <BudgetingTool />,
-  Budgets: <FinancialDashboard />,
-  Debts: <Download />,
+  Home: <div>HI Its HOME</div>,
+  Budgets: <Budgets/>,
+  Debts: <Debts />,
   Expenses: (
-    <div className="bg-primary text-accent flex justify-center items-center h-screen wfull text-6xl">
+    <div className="bg-primary text-accent flex justify-center items-center h-screen w-full text-6xl">
       {" "}
       Expense
     </div>
   ),
   Incomes: (
-    <div className="bg-primary text-accent flex justify-center items-center h-screen wfull text-6xl">
+    <div className="bg-primary text-accent flex justify-center items-center h-screen w-full text-6xl">
       {" "}
       Incomes
     </div>
   ),
   Investments: (
-    <div className="bg-primary text-accent flex justify-center items-center h-screen wfull text-6xl">
-      {" "}
-      Investments
-    </div>
+    <Investments/>
   ),
   Savings: (
-    <div className="bg-primary text-accent flex justify-center items-center h-screen wfull text-6xl">
+    <div className="bg-primary text-accent flex justify-center items-center h-screen w-full text-6xl">
       {" "}
       Savings
     </div>
   ),
   "All Transactions": (
-    <div className="bg-primary text-accent flex justify-center items-center h-screen wfull text-6xl">
+    <div className="bg-primary text-accent flex justify-center items-center h-screen w-full text-6xl">
       {" "}
       Transactions
     </div>
   ),
   Reports: (
-    <div className="bg-primary text-accent flex justify-center items-center h-screen wfull text-6xl">
+    <div className="bg-primary text-accent flex justify-center items-center h-screen w-full text-6xl">
       {" "}
       Reports
     </div>
   ),
 };
 
-export const NavSidebar = () => {
+export const DashBoardApp = () => {
   const [selected, setSelected] = useState("Budgets");
   return (
-    <div className="flex bg-background">
+    <div className="flex h-screen bg-background">
       <Sidebar selected={selected} setSelected={setSelected} />
-      <div className="flex-1">{componentMap[selected] || <div>ERROR</div>}</div>
+      <div className="flex-1 h-screen overflow-x-hidden ">
+        {componentMap[selected] || <div>ERROR</div>}
+      </div>
     </div>
   );
 };
@@ -85,13 +82,12 @@ const Sidebar = ({
   return (
     <motion.nav
       layout
-      className="sticky top-0 h-screen shrink-0 border-r border-accent bg-primary p-2"
+      className="sticky top-0 shrink-0 border-r border-accent bg-primary p-2"
       style={{
         width: open ? "225px" : "fit-content",
       }}
     >
       <TitleSection open={open} />
-      <ThemeToggle />
       <div className="space-y-1">
         <Option
           Icon={FiHome}
@@ -158,7 +154,6 @@ const Sidebar = ({
           open={open}
         />
       </div>
-
       <ToggleClose open={open} setOpen={setOpen} />
     </motion.nav>
   );

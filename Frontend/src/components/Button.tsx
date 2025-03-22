@@ -8,6 +8,7 @@ type Buttonprops = {
   link?: string;
   className?: string;
   action?: () => void;
+  disabled?: boolean;
 };
 
 export default function Button({
@@ -16,11 +17,13 @@ export default function Button({
   bgcolor = true,
   action,
   link,
+  disabled,
 }: Buttonprops) {
   const navigate = useNavigate();
 
   return (
     <motion.button
+      disabled={disabled}
       initial={{ scale: 1 }}
       whileHover={{ scale: 1.1 }}
       whileTap={{ scale: 1 }}
@@ -31,7 +34,8 @@ export default function Button({
       }}
       className={cn(
         bgcolor ? "bg-secondary" : "bg-transparent border border-accent",
-        " rounded-lg p-2 w-fit cursor-pointer",
+        " rounded-lg p-2 w-fit cursor-pointer disabled:opacity-50",
+
         className
       )}
     >

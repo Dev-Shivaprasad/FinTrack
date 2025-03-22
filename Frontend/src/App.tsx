@@ -5,13 +5,11 @@ import ExpenseTrack from "./components/ExpenseTrack";
 import Home from "./components/Home";
 import IncomeManagement from "./components/IncomeManagment";
 import SavingGoal from "./components/SavingGoal";
-import Theme from "./components/Theme";
 import UserFriendly from "./components/UserFriendly";
 
 export default function App() {
   return (
     <>
-      <Theme className="absolute top-10 flex w-full  items-center justify-center z-30 " />
       <Home />
       <Chart />
       <ExpenseTrack />

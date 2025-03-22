@@ -1,4 +1,5 @@
 ﻿using FinTrack.Model;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
@@ -42,6 +43,8 @@ namespace FinTrack.Controllers
         public async Task<ActionResult<object>> PostUser(UserModel user)
         {
             if (user == null) return BadRequest(new { message = "Invalid user data." });
+            if (await Userreg.Users.AnyAsync(model => model.Email == user.Email))
+                return BadRequest(new { message = "This email is already taken." });
 
             try
             {
