@@ -25,7 +25,7 @@ public class IncomeController(DBcontext Incomedb) : ControllerBase
     }
 
     [HttpGet("{id}")]
-    public async Task<ActionResult<IncomeModel>> GetBudget(Guid id)
+    public async Task<ActionResult<IncomeModel>> GetIncome(Guid id)
     {
         try
         {
@@ -40,6 +40,24 @@ public class IncomeController(DBcontext Incomedb) : ControllerBase
                 new { message = "An error occurred while fetching the income record.", error = ex.Message });
         }
     }
+    
+    [HttpGet()]
+    [Route("byuser/{UserId}")]
+    public async Task<ActionResult<IncomeModel>> GetIncomeByUserId(Guid UserId)
+    {
+        try
+        {
+            var income = await Incomedb.Incomes.Where(id => id.UserId == UserId).ToListAsync();
+            if (income == null) return NotFound(new { message = "Income record not found." });
+
+            return Ok(income);
+        }
+        catch (Exception ex)
+        {
+            return StatusCode(StatusCodes.Status500InternalServerError,
+                new { message = "An error occurred while fetching the income by UserId.", error = ex.Message });
+        }
+    }
 
     [HttpPost]
     public async Task<ActionResult<IncomeModel>> PostUser(IncomeModel addIncome)
@@ -52,7 +70,7 @@ public class IncomeController(DBcontext Incomedb) : ControllerBase
             Incomedb.Incomes.Add(addIncome);
             await Incomedb.SaveChangesAsync();
 
-            return CreatedAtAction(nameof(GetBudget), new { id = addIncome.IncomeId }, addIncome);
+            return CreatedAtAction(nameof(GetIncome), new { id = addIncome.IncomeId }, addIncome);
         }
         catch (DbUpdateException dbEx)
         {

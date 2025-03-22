@@ -9,7 +9,7 @@ namespace FinTrack.Controllers.Controllers;
 [ApiController]
 public class TransactionController(DBcontext Transactiondb) : ControllerBase
 {
-        [HttpGet]
+    [HttpGet]
     public async Task<ActionResult<IEnumerable<TransactionsModel>>> GetAllTransactions()
     {
         try
@@ -38,6 +38,24 @@ public class TransactionController(DBcontext Transactiondb) : ControllerBase
         {
             return StatusCode(StatusCodes.Status500InternalServerError,
                 new { message = "An error occurred while fetching the Transaction.", error = ex.Message });
+        }
+    }
+
+    [HttpGet()]
+    [Route("byuser/{UserId}")]
+    public async Task<ActionResult<TransactionsModel>> GetTransactionByUserId(Guid UserId)
+    {
+        try
+        {
+            var transaction = await Transactiondb.Transactions.Where(id => id.UserId == UserId).ToListAsync();
+            if (transaction == null) return NotFound(new { message = "Transaction record not found." });
+
+            return Ok(transaction);
+        }
+        catch (Exception ex)
+        {
+            return StatusCode(StatusCodes.Status500InternalServerError,
+                new { message = "An error occurred while fetching the transaction by UserId.", error = ex.Message });
         }
     }
 

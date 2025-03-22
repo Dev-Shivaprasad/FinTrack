@@ -1,77 +1,84 @@
 export interface User {
-    UserId: string;
-    Name: string;
-    Email: string;
-    PasswordHash: string;
-    CreatedAt: Date;
+    userId: string;
+    name: string;
+    email: string;
+    passwordHash: string;
+    createdAt: Date;
 }
 
-export interface Login {
-    Email: string;
-    Password: string;
+export interface LoginDbSchema {
+    email: string;
+    password: string;
 }
 
-export interface Investment {
-    InvestmentId: string;
-    UserId: string;
-    Type: string;
-    Amount: number;
-    DateInvested: string; // ISO format (YYYY-MM-DD)
-    CreatedAt: Date;
+export interface DebtDbSchema {
+    debtId: string;
+    userId: string;
+    lender: string;
+    amountOwed: number;
+    interestRate: number;
+    dueDate: string; // ISO format (YYYY-MM-DD)
+    createdAt: Date;
 }
 
-export interface Savings {
-    SavingId: string;
-    UserId: string;
-    GoalName: string;
-    TargetAmount: number;
-    CurrentAmount: number;
-    CreatedAt: Date;
+export interface InvestmentDbSchema {
+    investmentId: string;
+    userId: string;
+    type: string;
+    amount: number;
+    dateInvested: string; // ISO format (YYYY-MM-DD)
+    createdAt: Date;
 }
 
-export interface Transaction {
-    TransactionId: string;
-    UserId: string;
-    Type: string;
-    Amount: number;
-    Date: string; // ISO format (YYYY-MM-DD)
-    Category: string;
-    CreatedAt: Date;
+export interface SavingsDbSchema {
+    savingId: string;
+    userId: string;
+    goalName: string;
+    targetAmount: number;
+    currentAmount: number;
+    createdAt: Date;
 }
 
-export interface Budget {
-    BudgetId: string;
-    UserId: string;
-    MonthYear: string;
-    Category: string;
-    AllocatedAmount: number;
-    CreatedAt: Date;
+
+export interface BudgetDbSchema {
+    budgetId: string;
+    userId: string;
+    monthYear: string;
+    category: string;
+    allocatedAmount: number;
+    createdAt: Date;
 }
 
-export interface Debt {
-    DebtId: string;
-    UserId: string;
-    Lender: string;
-    AmountOwed: number;
-    InterestRate: number;
-    DueDate: string; // ISO format (YYYY-MM-DD)
-    CreatedAt: Date;
+
+
+export interface ExpenseDbSchema {
+    expenseId: string;
+    userId: string;
+    category: string;
+    amount: number;
+    dateSpent: string; // ISO format (YYYY-MM-DD)
+    isFixed: boolean;
+    createdAt: Date;
 }
 
-export interface Expense {
-    ExpenseId: string;
-    UserId: string;
-    Category: string;
-    Amount: number;
-    DateSpent: string; // ISO format (YYYY-MM-DD)
-    IsFixed: boolean;
-    CreatedAt: Date;
+export interface IncomeDbSchema {
+    incomeId: string;
+    userId: string;
+    source: string;
+    amount: number;
+    createdAt: Date;
 }
 
-export interface Income {
-    IncomeId: string;
-    UserId: string;
-    Source: string;
-    Amount: number;
-    CreatedAt: Date;
+export interface TransactionDbSchema {
+    transactionId: string;
+    userId: string;
+    type: string;
+    amount: number;
+    date: string; // ISO format (YYYY-MM-DD)
+    category: string;
+    createdAt: Date;
 }
+
+export function GetUserId(): string {
+    return "24EC15D3-9D05-F011-95A4-18CC182F09B2"
+} 

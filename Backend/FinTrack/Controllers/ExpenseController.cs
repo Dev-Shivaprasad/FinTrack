@@ -41,6 +41,24 @@ public class ExpenseController(DBcontext Expensedb) : ControllerBase
         }
     }
 
+    [HttpGet()]
+    [Route("byuser/{UserId}")]
+    public async Task<ActionResult<ExpenseModel>> GetExpenseByUserId(Guid UserId)
+    {
+        try
+        {
+            var expense = await Expensedb.Expenses.Where(id => id.UserId == UserId).ToListAsync();
+            if (expense == null) return NotFound(new { message = "Expense record not found." });
+
+            return Ok(expense);
+        }
+        catch (Exception ex)
+        {
+            return StatusCode(StatusCodes.Status500InternalServerError,
+                new { message = "An error occurred while fetching the expense by UserId.", error = ex.Message });
+        }
+    }
+
     [HttpPost]
     public async Task<ActionResult<ExpenseModel>> PostExpense(ExpenseModel addExpense)
     {

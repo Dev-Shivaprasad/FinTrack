@@ -9,7 +9,7 @@ namespace FinTrack.Controllers.Controllers;
 [ApiController]
 public class SavingsController(DBcontext Savingsdb) : ControllerBase
 {
-       [HttpGet]
+    [HttpGet]
     public async Task<ActionResult<IEnumerable<SavingsModel>>> GetAllSavings()
     {
         try
@@ -38,6 +38,24 @@ public class SavingsController(DBcontext Savingsdb) : ControllerBase
         {
             return StatusCode(StatusCodes.Status500InternalServerError,
                 new { message = "An error occurred while fetching the Saving.", error = ex.Message });
+        }
+    }
+
+    [HttpGet()]
+    [Route("byuser/{UserId}")]
+    public async Task<ActionResult<SavingsModel>> GetSavingsByUserId(Guid UserId)
+    {
+        try
+        {
+            var saving = await Savingsdb.Savings.Where(id => id.UserId == UserId).ToListAsync();
+            if (saving == null) return NotFound(new { message = "Savings record not found." });
+
+            return Ok(saving);
+        }
+        catch (Exception ex)
+        {
+            return StatusCode(StatusCodes.Status500InternalServerError,
+                new { message = "An error occurred while fetching the saving by UserId.", error = ex.Message });
         }
     }
 

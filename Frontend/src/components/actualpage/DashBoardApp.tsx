@@ -16,12 +16,18 @@ import { BiTrendingUp, BiTransfer } from "react-icons/bi";
 import { AiOutlineFundProjectionScreen } from "react-icons/ai";
 import { motion } from "motion/react";
 import { cn } from "../utils/utils";
-import Budgets from "./Budgets";
+// import Budgets from "./Budgets";
 import Debts from "./Debt";
+import ThemeToggle from "../Theme";
 import Investments from "./Investments";
 const componentMap: { [key: string]: JSX.Element } = {
   Home: <div>HI Its HOME</div>,
-  Budgets: <Budgets/>,
+  Budgets: (
+    <div className="bg-primary text-accent flex justify-center items-center h-screen w-full text-6xl">
+      {" "}
+      Budget
+    </div>
+  ),
   Debts: <Debts />,
   Expenses: (
     <div className="bg-primary text-accent flex justify-center items-center h-screen w-full text-6xl">
@@ -35,9 +41,7 @@ const componentMap: { [key: string]: JSX.Element } = {
       Incomes
     </div>
   ),
-  Investments: (
-    <Investments/>
-  ),
+  Investments: <Investments />,
   Savings: (
     <div className="bg-primary text-accent flex justify-center items-center h-screen w-full text-6xl">
       {" "}
@@ -59,9 +63,11 @@ const componentMap: { [key: string]: JSX.Element } = {
 };
 
 export const DashBoardApp = () => {
-  const [selected, setSelected] = useState("Budgets");
+  const [selected, setSelected] = useState("Debts");
   return (
     <div className="flex h-screen bg-background">
+      <ThemeToggle className="absolute top-5 flex w-full  items-center justify-center z-30 " />
+
       <Sidebar selected={selected} setSelected={setSelected} />
       <div className="flex-1 h-screen overflow-x-hidden ">
         {componentMap[selected] || <div>ERROR</div>}
@@ -82,13 +88,13 @@ const Sidebar = ({
   return (
     <motion.nav
       layout
-      className="sticky top-0 shrink-0 border-r border-accent bg-primary p-2"
+      className="sticky top-0 shrink-0 border-r border-accent bg-primary p-2 overflow-auto"
       style={{
         width: open ? "225px" : "fit-content",
       }}
     >
       <TitleSection open={open} />
-      <div className="space-y-1">
+      <div className="flex flex-col flex-wrap">
         <Option
           Icon={FiHome}
           title="Home"

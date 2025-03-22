@@ -41,6 +41,24 @@ public class InvestmentController(DBcontext Investmentdb) : ControllerBase
         }
     }
 
+    [HttpGet()]
+    [Route("byuser/{UserId}")]
+    public async Task<ActionResult<InvestmentModel>> GetInvestmentByUserId(Guid UserId)
+    {
+        try
+        {
+            var investment = await Investmentdb.Investments.Where(id => id.UserId == UserId).ToListAsync();
+            if (investment == null) return NotFound(new { message = "Investment record not found." });
+
+            return Ok(investment);
+        }
+        catch (Exception ex)
+        {
+            return StatusCode(StatusCodes.Status500InternalServerError,
+                new { message = "An error occurred while fetching the investment by UserId.", error = ex.Message });
+        }
+    }
+
     [HttpPost]
     public async Task<ActionResult<InvestmentModel>> PostDebt(InvestmentModel addInvestment)
     {

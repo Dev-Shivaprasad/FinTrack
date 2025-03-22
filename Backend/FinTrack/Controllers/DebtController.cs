@@ -41,6 +41,24 @@ public class DebtController(DBcontext Debtdb) : ControllerBase
         }
     }
 
+    [HttpGet()]
+    [Route("byuser/{UserId}")]
+    public async Task<ActionResult<DebtModel>> GetDebtByUserId(Guid UserId)
+    {
+        try
+        {
+            var debt = await Debtdb.Debts.Where(id => id.UserId == UserId).ToListAsync();
+            if (debt == null) return NotFound(new { message = "Debt record not found." });
+
+            return Ok(debt);
+        }
+        catch (Exception ex)
+        {
+            return StatusCode(StatusCodes.Status500InternalServerError,
+                new { message = "An error occurred while fetching the debt by UserId.", error = ex.Message });
+        }
+    }
+
     [HttpPost]
     public async Task<ActionResult<DebtModel>> PostDebt(DebtModel addDebt)
     {

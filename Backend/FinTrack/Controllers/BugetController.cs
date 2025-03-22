@@ -41,6 +41,24 @@ public class BudgetController(DBcontext Budgetdb) : ControllerBase
         }
     }
 
+    [HttpGet()]
+    [Route("byuser/{UserId}")]
+    public async Task<ActionResult<BudgetModel>> GetBudgetByUserId(Guid UserId)
+    {
+        try
+        {
+            var budget = await Budgetdb.Budgets.Where(id => id.UserId == UserId).ToListAsync();
+            if (budget == null) return NotFound(new { message = "Budget record not found." });
+
+            return Ok(budget);
+        }
+        catch (Exception ex)
+        {
+            return StatusCode(StatusCodes.Status500InternalServerError,
+                new { message = "An error occurred while fetching the budget by UserId.", error = ex.Message });
+        }
+    }
+
     [HttpPost]
     public async Task<ActionResult<BudgetModel>> PostBudget(BudgetModel addBudget)
     {
