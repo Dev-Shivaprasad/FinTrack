@@ -38,20 +38,15 @@ const AuthForm: React.FC = () => {
             email: data.email,
             password: hashedpassword,
           })
-          .then((resp) => {
-            localStorage.setItem(
-              "Cred",
-              JSON.stringify({ id: resp.data.id, username: resp.data.username })
-            );
-          })
           .then((_) => Goto({ Link: "/dashboard" }))
           .catch(
             (err) =>
               `Something Went Boom : ${
                 err.status === 404
-                  ? toast.error(
+                  ?( toast.error(
                       "User Not Found Either the Email or Password is Incorrect"
-                    )
+                    ), console.log("email : " + data.email + "  --  " + "password : " + data.password + "  --  " + "Hashed password : " + hashedpassword))
+                    
                   : err.status === 500
                   ? toast.error("Server Error")
                   : toast.error("Server Down :(")
@@ -66,7 +61,7 @@ const AuthForm: React.FC = () => {
           .then((_) => {
             setIsLogin(!isLogin),
               toast.success(
-                "You hace registered Successfully 😊, now Login to Get Started"
+                "You have registered Successfully 😊, now Login to Get Started"
               );
           })
           .catch((err) => {
