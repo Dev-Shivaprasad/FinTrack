@@ -16,38 +16,21 @@ import { BiTrendingUp, BiTransfer } from "react-icons/bi";
 import { AiOutlineFundProjectionScreen } from "react-icons/ai";
 import { motion } from "motion/react";
 import { cn } from "../utils/utils";
-// import Budgets from "./Budgets";
-import Debts from "./Debt";
 import ThemeToggle from "../Theme";
 import Investments from "./Investments";
+import BudgetsPage from "./Budgets";
+import ExpensesPage from "./Expenses";
+import DebtsPage from "./Debt";
+import IncomesPage from "./Income";
+import SavingsPage from "./Savings";
 const componentMap: { [key: string]: JSX.Element } = {
   Home: <div>HI Its HOME</div>,
-  Budgets: (
-    <div className="bg-primary text-accent flex justify-center items-center h-screen w-full text-6xl">
-      {" "}
-      Budget
-    </div>
-  ),
-  Debts: <Debts />,
-  Expenses: (
-    <div className="bg-primary text-accent flex justify-center items-center h-screen w-full text-6xl">
-      {" "}
-      Expense
-    </div>
-  ),
-  Incomes: (
-    <div className="bg-primary text-accent flex justify-center items-center h-screen w-full text-6xl">
-      {" "}
-      Incomes
-    </div>
-  ),
+  Budgets: <BudgetsPage />,
+  Debts: <DebtsPage />,
+  Expenses: <ExpensesPage />,
+  Incomes: <IncomesPage />,
   Investments: <Investments />,
-  Savings: (
-    <div className="bg-primary text-accent flex justify-center items-center h-screen w-full text-6xl">
-      {" "}
-      Savings
-    </div>
-  ),
+  Savings: <SavingsPage />,
   "All Transactions": (
     <div className="bg-primary text-accent flex justify-center items-center h-screen w-full text-6xl">
       {" "}

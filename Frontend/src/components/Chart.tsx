@@ -12,9 +12,9 @@ export default function FinancialDashboard() {
   return (
     <div
       id="nxt"
-      className="flex items-center justify-center min-h-screen bg-secondary p-4"
+      className="w-full flex items-center justify-center min-h-screen bg-secondary p-4"
     >
-      <div className="w-full max-w-3xl bg-background p-6 shadow-xl rounded-2xl ">
+      <div className="max-w-4xl w-full  mx-auto bg-background mt-14 rounded-2xl border-2 border-text/50 shadow-[4px_4px_0px_0px_var(--color-text)] hover:shadow-[8px_8px_0px_0px_var(--color-text)] transition-all">
         <h2 className="text-2xl font-bold text-primary text-center font-Heading">
           {" "}
           Dashboard: Your Financial Snapshot
@@ -53,7 +53,7 @@ export default function FinancialDashboard() {
             </PieChart>
           </ResponsiveContainer>
         </motion.div>
-        <div className="flex flex-wrap justify-center gap-4 mt-6">
+        <div className="  flex flex-wrap justify-center gap-4 mt-6">
           {data.map((item, index) => (
             <div key={index} className="flex items-center space-x-2">
               <div

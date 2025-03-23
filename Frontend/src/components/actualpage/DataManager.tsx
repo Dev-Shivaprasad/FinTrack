@@ -1,57 +1,74 @@
+"use client";
+
 import { useEffect, useState } from "react";
-import { useForm, Controller, FieldValues, Path } from "react-hook-form";
+import { useForm, Controller } from "react-hook-form";
 import { motion, AnimatePresence } from "motion/react";
 import DatePicker from "react-datepicker";
 import "react-datepicker/dist/react-datepicker.css";
 import { Maximize2, ChevronDown, Pencil, Trash2 } from "lucide-react";
 import axios from "axios";
 import toast, { Toaster } from "react-hot-toast";
-import normaldatetime from "../utils/Normaldatetime";
-import { GetUserId } from "../utils/DbSchema";
 
-interface Field {
-  name: string;
-  type: string;
-  label: string;
-  placeholder: string;
-  required?: boolean;
-  min?: number;
-}
+// Generic type for all financial data types
+type FinancialData = {
+  userId: string;
+  [key: string]: any;
+};
 
-interface DataManagerProps {
+// Props for the component
+interface FinancialTrackerProps<T extends FinancialData> {
+  title: string;
   baseURL: string;
   endpoints: {
-    get: string;
+    getByUserId: string;
     post: string;
     put: string;
     delete: string;
   };
-  fields: Field[];
-  title: string;
-  itemTitle: string;
+  getUserId: string;
+  fields: {
+    name: keyof T;
+    label: string;
+    type: "text" | "number" | "date" | "boolean" | "select";
+    required?: boolean;
+    min?: number;
+    options?: { value: string; label: string }[]; // For select fields
+  }[];
+  idField: keyof T;
+  displayFields: {
+    name: keyof T;
+    label: string;
+    format?: (value: any, item?: any) => string;
+  }[];
+  formatDate?: (date: string) => string;
+  defaultValues: Partial<T>;
 }
 
-const DataManager = <T extends FieldValues>({
+export default function DataManager<T extends FinancialData>({
+  title,
   baseURL,
   endpoints,
+  getUserId,
   fields,
-  title,
-  itemTitle,
-}: DataManagerProps) => {
+  idField,
+  displayFields,
+  formatDate = (date) => new Date(date).toLocaleDateString(),
+  defaultValues,
+}: FinancialTrackerProps<T>) {
   const [data, setData] = useState<T[]>([]);
-  const [updateState, setUpdateState] = useState<{
+  const [update, setUpdate] = useState<{
     state: boolean;
     id: string | null;
   }>({ state: false, id: null });
   const [isFormCollapsed, setIsFormCollapsed] = useState(false);
   const [isTableCollapsed, setIsTableCollapsed] = useState(false);
 
-  const fetchData = () => {
+  function fetchData() {
     axios
-      .get(baseURL + endpoints.get + GetUserId())
+      .get(baseURL + endpoints.getByUserId + getUserId)
       .then((response) => setData(response.data))
       .catch((err) => console.log(err));
-  };
+  }
 
   useEffect(() => {
     fetchData();
@@ -63,59 +80,62 @@ const DataManager = <T extends FieldValues>({
     control,
     reset,
     formState: { errors },
-  } = useForm<T>();
+  } = useForm<T>({
+    defaultValues: defaultValues as any,
+  });
 
-  const deleteItem = (id: string) => {
+  function deleteItem(id: string) {
     axios
       .delete(baseURL + endpoints.delete + id)
-      .then(() => {
-        toast.success("Deleted Successfully");
-        fetchData();
-      })
+      .then((_) => toast.success("Deleted Successfully"))
+      .then((_) => fetchData())
       .catch((err) => toast.error("Error: " + err));
-  };
+  }
 
-  const updateItem = (item: T) => {
-    reset(item);
-    setUpdateState({ state: !updateState.state, id: (item as any).id });
-  };
+  function updateItem(item: T) {
+    reset(item as any);
+    setUpdate({ state: true, id: item[idField] as string });
+  }
 
   const onSubmit = (formData: T) => {
-    const dateFields = fields.filter((field) => field.type === "date");
-    dateFields.forEach((field) => {
-      (formData as any)[field.name] = new Date((formData as any)[field.name])
-        .toISOString()
-        .split("T")[0];
+    // Process date fields if needed
+    const processedData = { ...formData };
+
+    fields.forEach((field) => {
+      if (field.type === "date" && processedData[field.name]) {
+        const dateValue = new Date(processedData[field.name] as string);
+        processedData[field.name] = dateValue
+          .toISOString()
+          .split("T")[0] as any;
+      }
     });
 
-    if (updateState.state) {
+    // Add userId
+    processedData.userId = getUserId;
+
+    if (update.state) {
       axios
-        .put(baseURL + endpoints.put + updateState.id, {
-          ...formData,
-          userId: GetUserId(),
-        })
-        .then(() => {
-          toast.success("Updated Successfully");
-          fetchData();
-          reset();
-          setUpdateState({ state: !updateState.state, id: null });
-        })
+        .put(baseURL + endpoints.put + update.id, processedData)
+        .then((_) => toast.success("Updated Successfully"))
+        .then((_) => fetchData())
         .catch((err) => {
           toast.error("Error: " + err);
-          console.log(formData);
+          console.log(processedData);
         });
+
+      reset(defaultValues as any);
+      setUpdate({ state: false, id: null });
     } else {
       axios
-        .post(baseURL + endpoints.post, { ...formData, userId: GetUserId() })
-        .then(() => {
-          toast.success("Added Successfully");
-          fetchData();
-          reset();
-        })
+        .post(baseURL + endpoints.post, processedData)
+        .then((_) => toast.success("Added Successfully"))
+        .then((_) => fetchData())
         .catch((err) => {
           toast.error("Error: " + err);
-          console.log(formData);
+          console.log(processedData);
         });
+
+      reset(defaultValues as any);
     }
   };
 
@@ -131,7 +151,7 @@ const DataManager = <T extends FieldValues>({
         <div className="p-6">
           <div className="flex justify-between items-center mb-6">
             <h1 className="text-2xl font-bold text-text font-Heading">
-              {title}
+              {update.state ? `Update ${title}` : `Add New ${title}`}
             </h1>
             <button
               onClick={() => setIsFormCollapsed(!isFormCollapsed)}
@@ -156,44 +176,96 @@ const DataManager = <T extends FieldValues>({
               >
                 <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
                   {fields.map((field) => (
-                    <div key={field.name}>
+                    <div key={field.name as string}>
                       <label className="block text-sm font-bold text-background mb-1">
                         {field.label}
                       </label>
+
                       {field.type === "date" ? (
                         <Controller
                           control={control}
-                          name={field.name as Path<T>}
-                          rules={{ required: field.required }}
-                          render={({ field }) => (
+                          name={field.name as any}
+                          rules={{
+                            required: field.required
+                              ? `${field.label} is required`
+                              : false,
+                          }}
+                          render={({ field: controllerField }) => (
                             <DatePicker
                               selected={
-                                field.value ? new Date(field.value) : null
+                                controllerField.value
+                                  ? new Date(controllerField.value)
+                                  : null
                               }
-                              onChange={(date) => field.onChange(date)}
-                              className="w-full px-3 py-2 bg-gray-100 border-2 border-black rounded-lg shadow-[2px_2px_0px_0px_rgba(0,0,0,1)] focus:shadow-[4px_4px_0px_0px_rgba(0,0,0,1)] transition-all focus:outline-none text-black"
+                              onChange={(date) =>
+                                controllerField.onChange(date)
+                              }
+                              className="w-full px-3 py-2 bg-gray-100 border-2 border-black rounded-lg 
+                              shadow-[2px_2px_0px_0px_rgba(0,0,0,1)] focus:shadow-[4px_4px_0px_0px_rgba(0,0,0,1)] 
+                              transition-all focus:outline-none text-black"
+                              placeholderText={`Select ${field.label.toLowerCase()}`}
                               dateFormat="MMMM d, yyyy"
                               calendarClassName="!border-black !shadow-[4px_4px_0px_0px_rgba(0,0,0,1)]"
-                              popperClassName="!border-black !shadow-[4px_4px_0px_0px_rgba(0,0,0,1)]"
                             />
                           )}
                         />
+                      ) : field.type === "boolean" ? (
+                        <select
+                          {...register(field.name as any, {
+                            required: field.required
+                              ? `${field.label} is required`
+                              : false,
+                          })}
+                          className="w-full px-3 py-2 bg-secondary border-2 border-black rounded-lg shadow-[2px_2px_0px_0px_rgba(0,0,0,1)] focus:shadow-[4px_4px_0px_0px_rgba(0,0,0,1)] transition-all focus:outline-none"
+                        >
+                          <option value="false">No</option>
+                          <option value="true">Yes</option>
+                        </select>
+                      ) : field.type === "select" && field.options ? (
+                        <select
+                          {...register(field.name as any, {
+                            required: field.required
+                              ? `${field.label} is required`
+                              : false,
+                          })}
+                          className="w-full px-3 py-2 bg-secondary border-2 border-black rounded-lg shadow-[2px_2px_0px_0px_rgba(0,0,0,1)] focus:shadow-[4px_4px_0px_0px_rgba(0,0,0,1)] transition-all focus:outline-none"
+                        >
+                          <option value="">Select {field.label}</option>
+                          {field.options.map((option) => (
+                            <option key={option.value} value={option.value}>
+                              {option.label}
+                            </option>
+                          ))}
+                        </select>
                       ) : (
                         <input
-                          {...register(field.name as Path<T>, {
-                            required: field.required,
-                            min: field.min,
+                          type={field.type}
+                          onWheel={(e) =>
+                            field.type === "number" &&
+                            e.target instanceof HTMLElement &&
+                            e.target.blur()
+                          }
+                          {...register(field.name as any, {
+                            required: field.required
+                              ? `${field.label} is required`
+                              : false,
+                            min:
+                              field.min !== undefined
+                                ? {
+                                    value: field.min,
+                                    message: `${field.label} must be at least ${field.min}`,
+                                  }
+                                : undefined,
                             valueAsNumber: field.type === "number",
                           })}
-                          type={field.type}
                           className="w-full px-3 py-2 bg-secondary border-2 border-black rounded-lg shadow-[2px_2px_0px_0px_rgba(0,0,0,1)] focus:shadow-[4px_4px_0px_0px_rgba(0,0,0,1)] transition-all focus:outline-none"
-                          placeholder={field.placeholder}
+                          placeholder={`Enter ${field.label.toLowerCase()}`}
                         />
                       )}
-                      {errors[field.name as keyof T] && (
+
+                      {errors[field.name] && (
                         <p className="mt-1 text-sm text-red-500 font-bold">
-                          {errors[field.name as keyof T]?.message &&
-                            String(errors[field.name as keyof T]?.message)}
+                          {errors[field.name]?.message as string}
                         </p>
                       )}
                     </div>
@@ -204,8 +276,8 @@ const DataManager = <T extends FieldValues>({
                   <button
                     type="button"
                     onClick={() => {
-                      reset();
-                      setUpdateState({ state: false, id: null });
+                      reset(defaultValues as any);
+                      setUpdate({ state: false, id: null });
                     }}
                     className="px-4 py-2 bg-secondary border-2 border-black rounded-lg font-bold shadow-[2px_2px_0px_0px_rgba(0,0,0,1)] hover:shadow-[4px_4px_0px_0px_rgba(0,0,0,1)] transition-all active:shadow-[0px_0px_0px_0px_rgba(0,0,0,1)] active:translate-x-[4px] active:translate-y-[4px]"
                   >
@@ -215,7 +287,7 @@ const DataManager = <T extends FieldValues>({
                     type="submit"
                     className="px-4 py-2 bg-primary border-2 border-black rounded-lg font-bold text-bgbg-secondary shadow-[2px_2px_0px_0px_rgba(0,0,0,1)] hover:shadow-[4px_4px_0px_0px_rgba(0,0,0,1)] transition-all active:shadow-[0px_0px_0px_0px_rgba(0,0,0,1)] active:translate-x-[4px] active:translate-y-[4px]"
                   >
-                    {updateState.state ? "Update" : "Submit"}
+                    {update.state ? `Update ${title}` : "Submit"}
                   </button>
                 </div>
               </motion.form>
@@ -233,7 +305,7 @@ const DataManager = <T extends FieldValues>({
         <div className="p-6">
           <div className="flex justify-between items-center mb-6">
             <h2 className="text-2xl font-bold font-Heading text-text">
-              {itemTitle}
+              {title} List
             </h2>
             <button
               onClick={() => setIsTableCollapsed(!isTableCollapsed)}
@@ -260,7 +332,7 @@ const DataManager = <T extends FieldValues>({
                   <div className="md:hidden space-y-4">
                     {data.map((item) => (
                       <motion.div
-                        key={(item as any).id}
+                        key={item[idField] as string}
                         initial={{ opacity: 0 }}
                         animate={{ opacity: 1 }}
                         exit={{ opacity: 0 }}
@@ -268,7 +340,13 @@ const DataManager = <T extends FieldValues>({
                       >
                         <div className="flex justify-between items-start mb-2">
                           <div className="font-bold text-text">
-                            {(item as any)[fields[0].name]}
+                            {displayFields[0]
+                              ? displayFields[0].format
+                                ? displayFields[0].format(
+                                    item[displayFields[0].name]
+                                  )
+                                : item[displayFields[0].name]
+                              : item[idField]}
                           </div>
                           <div className="flex space-x-2">
                             <button
@@ -278,7 +356,9 @@ const DataManager = <T extends FieldValues>({
                               <Pencil size={16} />
                             </button>
                             <button
-                              onClick={() => deleteItem((item as any).id)}
+                              onClick={() =>
+                                deleteItem(item[idField] as string)
+                              }
                               className="p-1 bg-red-500 text-white border-2 border-black rounded-lg shadow-[2px_2px_0px_0px_rgba(0,0,0,1)] hover:shadow-[4px_4px_0px_0px_rgba(0,0,0,1)] transition-all active:shadow-[0px_0px_0px_0px_rgba(0,0,0,1)] active:translate-x-[4px] active:translate-y-[4px]"
                             >
                               <Trash2 size={16} />
@@ -286,15 +366,25 @@ const DataManager = <T extends FieldValues>({
                           </div>
                         </div>
                         <div className="grid grid-cols-2 gap-2 text-sm">
-                          {fields.slice(1).map((field) => (
-                            <div key={field.name}>
+                          {displayFields.slice(1).map((field, index) => (
+                            <div
+                              key={index}
+                              className={
+                                index >= displayFields.length - 2
+                                  ? "col-span-2"
+                                  : ""
+                              }
+                            >
                               <span className="font-bold text-text/50">
                                 {field.label}:
                               </span>
                               <span className="ml-2 text-text">
-                                {field.type === "date"
-                                  ? normaldatetime((item as any)[field.name])
-                                  : (item as any)[field.name]}
+                                {field.format
+                                  ? field.format(item[field.name])
+                                  : field.name.toString().includes("date") ||
+                                    field.name.toString().includes("Date")
+                                  ? formatDate(item[field.name] as string)
+                                  : item[field.name]}
                               </span>
                             </div>
                           ))}
@@ -308,9 +398,12 @@ const DataManager = <T extends FieldValues>({
                     <table className="min-w-full border-2 border-black rounded-lg shadow-[4px_4px_0px_0px_rgba(0,0,0,1)]">
                       <thead className="bg-secondary border-b-2 border-black">
                         <tr>
-                          {fields.map((field) => (
+                          <th className="px-6 py-3 text-left text-xs font-black text-text/70 uppercase tracking-wider">
+                            {idField.toString()}
+                          </th>
+                          {displayFields.map((field) => (
                             <th
-                              key={field.name}
+                              key={field.name as string}
                               className="px-6 py-3 text-left text-xs font-black text-text/70 uppercase tracking-wider"
                             >
                               {field.label}
@@ -324,19 +417,25 @@ const DataManager = <T extends FieldValues>({
                       <tbody className="bg-white divide-y-2 divide-black">
                         {data.map((item) => (
                           <motion.tr
-                            key={(item as any).id}
+                            key={item[idField] as string}
                             initial={{ opacity: 0 }}
                             animate={{ opacity: 1 }}
                             exit={{ opacity: 0 }}
                           >
-                            {fields.map((field) => (
+                            <td className="px-6 py-4 whitespace-nowrap text-sm font-bold text-gray-500">
+                              {item[idField] as string}
+                            </td>
+                            {displayFields.map((field) => (
                               <td
-                                key={field.name}
+                                key={field.name as string}
                                 className="px-6 py-4 whitespace-nowrap text-sm font-bold text-gray-900"
                               >
-                                {field.type === "date"
-                                  ? normaldatetime((item as any)[field.name])
-                                  : (item as any)[field.name]}
+                                {field.format
+                                  ? field.format(item[field.name])
+                                  : field.name.toString().includes("date") ||
+                                    field.name.toString().includes("Date")
+                                  ? formatDate(item[field.name] as string)
+                                  : item[field.name]}
                               </td>
                             ))}
                             <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-500">
@@ -348,7 +447,9 @@ const DataManager = <T extends FieldValues>({
                                   <Pencil size={16} />
                                 </button>
                                 <button
-                                  onClick={() => deleteItem((item as any).id)}
+                                  onClick={() =>
+                                    deleteItem(item[idField] as string)
+                                  }
                                   className="p-1 bg-red-500 text-white border-2 border-black rounded-lg shadow-[2px_2px_0px_0px_rgba(0,0,0,1)] hover:shadow-[4px_4px_0px_0px_rgba(0,0,0,1)] transition-all active:shadow-[0px_0px_0px_0px_rgba(0,0,0,1)] active:translate-x-[4px] active:translate-y-[4px]"
                                 >
                                   <Trash2 size={16} />
@@ -368,6 +469,4 @@ const DataManager = <T extends FieldValues>({
       </motion.div>
     </div>
   );
-};
-
-export default DataManager;
+}

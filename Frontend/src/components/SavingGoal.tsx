@@ -1,14 +1,17 @@
 const SavingGoal = () => {
   return (
-    <div className="flex min-h-fit h-[50vh] flex-col lg:flex-row items-center gap-8 p-6 bg-secondary">
+    <div className="flex w-full min-h-fit h-[50vh] flex-col lg:flex-row items-center gap-8  bg-secondary">
       <div className="w-full lg:w-1/2 flex justify-center">
-        <img
-          src="https://th.bing.com/th/id/OIP.HqilpO6Z_GCUpC428VkGQAHaEo?rs=1&pid=ImgDetMain"
-          alt="Savings Goals App"
-          className="w-full shadow-lg rounded-xl"
-        />
+        <div
+          style={{
+            backgroundPosition: "center",
+          }}
+          className="w-screen h-[50vh]  bg-[url('./assets/images/Savings_Goals.jpg')] bg-no-repeat bg-cover text-accent"
+        >
+          <div className="h-full w-full  bg-gradient-to-t from-secondary via-transparent to-transparent md:bg-gradient-to-l  " />
+        </div>
       </div>
-      <div className="w-full lg:w-1/2">
+      <div className="w-full lg:w-1/2 p-3">
         <h2 className="text-3xl font-bold text-primary font-Heading">
           Savings Goals: Visualize Your Dreams
         </h2>

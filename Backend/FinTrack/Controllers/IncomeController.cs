@@ -40,7 +40,7 @@ public class IncomeController(DBcontext Incomedb) : ControllerBase
                 new { message = "An error occurred while fetching the income record.", error = ex.Message });
         }
     }
-    
+
     [HttpGet()]
     [Route("byuser/{UserId}")]
     public async Task<ActionResult<IncomeModel>> GetIncomeByUserId(Guid UserId)

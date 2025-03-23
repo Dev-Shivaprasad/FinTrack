@@ -140,6 +140,9 @@ namespace FinTrack.Migrations
                         .HasColumnType("datetime2")
                         .HasDefaultValueSql("GETDATE()");
 
+                    b.Property<bool>("IsFixed")
+                        .HasColumnType("bit");
+
                     b.Property<string>("Source")
                         .IsRequired()
                         .HasColumnType("nvarchar(max)");

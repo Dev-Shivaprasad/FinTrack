@@ -8,8 +8,8 @@ const features = [
 ];
 const UserFriendly = () => {
   return (
-    <div className="flex flex-col items-center justify-center min-h-screen p-6">
-      <div className="bg-secondary p-10 rounded-2xl shadow-xl w-full max-w-4xl">
+    <div className="flex w-full flex-col items-center justify-center min-h-screen p-6">
+      <div className="bg-secondary p-10 max-w-4xl mx-auto mt-14 rounded-2xl border-2 border-text/50 shadow-[4px_4px_0px_0px_var(--color-text)] hover:shadow-[8px_8px_0px_0px_var(--color-text)] transition-all">
         <h2 className="text-3xl font-bold text-primary text-center">
           User-Friendly Design and Accessibility
         </h2>

@@ -1,48 +1,46 @@
 import { ShoppingCart, Utensils, Bus, Calendar } from "lucide-react";
+
 export default function ExpenseTracking() {
   return (
-    <div className="h-[70vh] min-h-fit flex flex-col md:flex-row items-center justify-between bg-bg *: p-10 shadow-md lg:px-60">
-      <div className="max-w-lg text-left">
-        <h2 className="text-4xl font-Heading font-semibold">
-          {" "}
-          Expense Tracking: <br />{" "}
-          <span className="">Effortless Input</span>
+    <div className="flex flex-col md:flex-row items-center justify-between bg-background shadow-md w-full min-h-screen md:min-h-[70vh]">
+      {/* Left Section: Text Content */}
+      <div className="w-full md:w-1/2 px-6 md:px-12 lg:px-20 py-10">
+        <h2 className="text-3xl md:text-4xl font-Heading font-semibold">
+          Expense Tracking: <br />
+          <span className="text-primary">Effortless Input</span>
         </h2>
-        <p className="mt-6 text-text/70">
-          Add daily expenses quickly using our simple input form.{" "}
+        <p className="mt-4 text-text/70">
+          Add daily expenses quickly using our simple input form.
         </p>
-        <p className="mt-6 text-text/70">
-          Expenses are categorized for detailed tracking.
-        </p>
+        <p className="mt-2 text-text/70">Expenses are categorized for detailed tracking.</p>
+
+        {/* Category Icons */}
         <div className="flex flex-wrap gap-6 mt-6">
-          <div className="flex flex-col items-center">
-            <Utensils className="w-8 h-8" />
-            <span className="mt-2  text-text/70 font-medium">Food</span>
-          </div>
-          <div className="flex flex-col items-center">
-            <Bus className=" w-8 h-8" />
-            <span className="mt-2  text-text/70 font-medium">
-              Transport
-            </span>
-          </div>
-          <div className="flex flex-col items-center">
-            <Calendar className="w-8 h-8" />
-            <span className="mt-2  text-text/70 font-medium">Bills</span>
-          </div>
-          <div className="flex flex-col items-center">
-            <ShoppingCart className="w-8 h-8" />
-            <span className="mt-2  text-text/70 font-medium">
-              Shopping
-            </span>
-          </div>
+          {[
+            { icon: <Utensils className="w-8 h-8" />, label: "Food" },
+            { icon: <Bus className="w-8 h-8" />, label: "Transport" },
+            { icon: <Calendar className="w-8 h-8" />, label: "Bills" },
+            { icon: <ShoppingCart className="w-8 h-8" />, label: "Shopping" },
+          ].map((item, index) => (
+            <div key={index} className="flex flex-col items-center">
+              {item.icon}
+              <span className="mt-2 text-text/70 font-medium">{item.label}</span>
+            </div>
+          ))}
         </div>
       </div>
-      <div className="mt-10 md:mt-0 md:ml-12">
-        <img
-          src="https://thumbs.dreamstime.com/b/tracking-expenses-inscription-card-near-office-supplies-computer-tracking-expenses-inscription-card-near-208911029.jpg"
-          alt="Expense Tracking App"
-          className="w-[400px] md:w-[380px] rounded-lg shadow-lg"
+
+      {/* Right Section: Responsive Background Image */}
+      <div className="w-full md:w-1/2 h-64 md:h-[70vh] bg-cover bg-center relative">
+        <div
+          className="absolute inset-0 bg-no-repeat bg-cover"
+          style={{
+            backgroundImage:
+              "url('./src/assets/images/Expense.jpg')",
+          }}
         />
+        {/* Overlay for better text contrast */}
+        <div className="absolute inset-0 bg-gradient-to-b from-background via-transparent to-transparent md:bg-gradient-to-r" />
       </div>
     </div>
   );

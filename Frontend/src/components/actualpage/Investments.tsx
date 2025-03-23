@@ -1,46 +1,73 @@
-import DataManager from "./DataManager";
-import { BaseURL, Investment } from "../utils/DBLinks";
+"use client"
 
-const Investments = () => {
-  const fields = [
-    {
-      name: "type",
-      type: "text",
-      label: "Type",
-      placeholder: "Enter investment type",
-      required: true,
-    },
-    {
-      name: "amount",
-      type: "number",
-      label: "Amount",
-      placeholder: "Enter amount",
-      required: true,
-      min: 0,
-    },
-    {
-      name: "dateInvested",
-      type: "date",
-      label: "Date Invested",
-      placeholder: "Select date invested",
-      required: true,
-    },
-  ];
+import { BaseURL, Investment } from "../utils/DBLinks"
+import { GetUserId, InvestmentDbSchema } from "../utils/DbSchema"
+import DataManager from "./DataManager"
 
+export default function InvestmentsPage() {
   return (
-    <DataManager
+    <DataManager<InvestmentDbSchema>
+      title="Investment"
       baseURL={BaseURL}
       endpoints={{
-        get: Investment.GetByUserId,
+        getByUserId: Investment.GetByUserId,
         post: Investment.Post,
         put: Investment.Put,
         delete: Investment.Delete,
       }}
-      fields={fields}
-      title="Add New Investment"
-      itemTitle="Investment List"
+      getUserId={GetUserId()}
+      fields={[
+        {
+          name: "type",
+          label: "Investment Type",
+          type: "select",
+          required: true,
+          options: [
+            { value: "stocks", label: "Stocks" },
+            { value: "bonds", label: "Bonds" },
+            { value: "realestate", label: "Real Estate" },
+            { value: "crypto", label: "Cryptocurrency" },
+            { value: "other", label: "Other" },
+          ],
+        },
+        {
+          name: "amount",
+          label: "Amount",
+          type: "number",
+          required: true,
+          min: 0,
+        },
+        {
+          name: "dateInvested",
+          label: "Date Invested",
+          type: "date",
+          required: true,
+        },
+      ]}
+      idField="investmentId"
+      displayFields={[
+        {
+          name: "type",
+          label: "Type",
+          format: (value) => value.charAt(0).toUpperCase() + value.slice(1),
+        },
+        {
+          name: "amount",
+          label: "Amount",
+          format: (value) => `₹ ${value}`,
+        },
+        {
+          name: "dateInvested",
+          label: "Date Invested",
+        },
+      ]}
+      defaultValues={{
+        userId: "",
+        type: "",
+        amount: 0,
+        dateInvested: "",
+      }}
     />
-  );
-};
+  )
+}
 
-export default Investments;
