@@ -8,6 +8,7 @@ import "react-datepicker/dist/react-datepicker.css";
 import { Maximize2, ChevronDown, Pencil, Trash2 } from "lucide-react";
 import axios from "axios";
 import toast, { Toaster } from "react-hot-toast";
+import { GetUserDetails } from "../utils/DbSchema";
 
 // Generic type for all financial data types
 type FinancialData = {
@@ -65,7 +66,12 @@ export default function DataManager<T extends FinancialData>({
 
   function fetchData() {
     axios
-      .get(baseURL + endpoints.getByUserId + getUserId)
+      .get(baseURL + endpoints.getByUserId + getUserId, {
+        headers: {
+          Authorization: `bearer ${GetUserDetails().jwt_token}`,
+          "Content-Type": "application/json",
+        },
+      })
       .then((response) => setData(response.data))
       .catch((err) => console.log(err));
   }
@@ -86,7 +92,12 @@ export default function DataManager<T extends FinancialData>({
 
   function deleteItem(id: string) {
     axios
-      .delete(baseURL + endpoints.delete + id)
+      .delete(baseURL + endpoints.delete + id, {
+        headers: {
+          Authorization: `bearer ${GetUserDetails().jwt_token}`,
+          "Content-Type": "application/json",
+        },
+      })
       .then((_) => toast.success("Deleted Successfully"))
       .then((_) => fetchData())
       .catch((err) => toast.error("Error: " + err));
@@ -115,7 +126,12 @@ export default function DataManager<T extends FinancialData>({
 
     if (update.state) {
       axios
-        .put(baseURL + endpoints.put + update.id, processedData)
+        .put(baseURL + endpoints.put + update.id, processedData, {
+          headers: {
+            Authorization: `bearer ${GetUserDetails().jwt_token}`,
+            "Content-Type": "application/json",
+          },
+        })
         .then((_) => toast.success("Updated Successfully"))
         .then((_) => fetchData())
         .catch((err) => {
@@ -127,7 +143,12 @@ export default function DataManager<T extends FinancialData>({
       setUpdate({ state: false, id: null });
     } else {
       axios
-        .post(baseURL + endpoints.post, processedData)
+        .post(baseURL + endpoints.post, processedData, {
+          headers: {
+            Authorization: `bearer ${GetUserDetails().jwt_token}`,
+            "Content-Type": "application/json",
+          },
+        })
         .then((_) => toast.success("Added Successfully"))
         .then((_) => fetchData())
         .catch((err) => {
@@ -140,13 +161,13 @@ export default function DataManager<T extends FinancialData>({
   };
 
   return (
-    <div className="min-h-screen flex flex-col justify-center bg-gradient-to-br from-primary to-secondary p-4 sm:p-6 md:p-8 space-y-6">
+    <div className="min-h-screen flex flex-col justify-center bg-background p-4 sm:p-6 md:p-8 space-y-6">
       <Toaster />
       {/* Form Section */}
       <motion.div
         initial={{ opacity: 0, y: 20 }}
         animate={{ opacity: 1, y: 0 }}
-        className="max-w-4xl mx-auto bg-primary mt-14 rounded-2xl border-2 border-black shadow-[4px_4px_0px_0px_rgba(0,0,0,1)] hover:shadow-[8px_8px_0px_0px_rgba(0,0,0,1)] transition-all"
+        className="max-w-4xl mx-auto bg-primary mt-14 rounded-2xl border-2 border-black shadow-[4px_4px_0px_0px_rgba(90,90,90,1)] hover:shadow-[8px_8px_0px_0px_rgba(90,90,90,1)] transition-all"
       >
         <div className="p-6">
           <div className="flex justify-between items-center mb-6">
@@ -300,7 +321,7 @@ export default function DataManager<T extends FinancialData>({
       <motion.div
         initial={{ opacity: 0, y: 20 }}
         animate={{ opacity: 1, y: 0 }}
-        className="w-full mx-auto bg-primary rounded-2xl border-2 border-black shadow-[4px_4px_0px_0px_rgba(0,0,0,1)] hover:shadow-[8px_8px_0px_0px_rgba(0,0,0,1)] transition-all"
+        className="w-full mx-auto bg-primary rounded-2xl border-2 border-black shadow-[4px_4px_0px_0px_rgba(90,90,90,1)] hover:shadow-[8px_8px_0px_0px_rgba(90,90,90,1)] transition-all"
       >
         <div className="p-6">
           <div className="flex justify-between items-center mb-6">

@@ -1,9 +1,7 @@
-"use client"
-
-import { BaseURL, Debt } from "../utils/DBLinks"
-import { DebtDbSchema, GetUserId } from "../utils/DbSchema"
-import normaldatetime from "../utils/Normaldatetime"
-import DataManager from "./DataManager"
+import { BaseURL, Debt } from "../utils/DBLinks";
+import { DebtDbSchema, GetUserDetails } from "../utils/DbSchema";
+import normaldatetime from "../utils/Normaldatetime";
+import DataManager from "./DataManager";
 
 export default function DebtsPage() {
   return (
@@ -16,7 +14,7 @@ export default function DebtsPage() {
         put: Debt.Put,
         delete: Debt.Delete,
       }}
-      getUserId={GetUserId()}
+      getUserId={GetUserDetails().user_id}
       fields={[
         {
           name: "lender",
@@ -75,6 +73,5 @@ export default function DebtsPage() {
         dueDate: "",
       }}
     />
-  )
+  );
 }
-

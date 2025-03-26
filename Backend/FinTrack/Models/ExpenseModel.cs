@@ -13,7 +13,7 @@ namespace FinTrack.Model
         [Column(TypeName ="decimal(18,2)")]
         public decimal Amount { get; set; }
         public DateOnly DateSpent { get; set; }
-        public bool IsFixed { get; set; }
+        public bool? IsFixed { get; set; }
         public DateTime CreatedAt { get; set; }
         [JsonIgnore]
         public UserModel? User { get; set; }

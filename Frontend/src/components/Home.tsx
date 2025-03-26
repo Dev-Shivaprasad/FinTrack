@@ -2,8 +2,8 @@ import Button from "./Button";
 const Finance = () => {
   return (
     <>
-      <div className="relative w-full h-screen flex items-center justify-center bg-black">
-        <div className="absolute inset-0 bg-cover bg-black opacity-20">
+      <div className="relative w-full h-screen flex items-center justify-center bg-black ">
+        <div className="absolute inset-0 bg-cover bg-black opacity-30">
           <video
             src="./src/assets/images/landing.mp4"
             className="w-full h-screen object-cover"

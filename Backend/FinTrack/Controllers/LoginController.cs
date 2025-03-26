@@ -1,5 +1,6 @@
 ﻿using FinTrack.Model;
 using FinTrack.Services;
+using Microsoft.AspNetCore.Components.Server.ProtectedBrowserStorage;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
@@ -10,28 +11,21 @@ namespace FinTrack.Controllers.Controllers;
 [ApiController]
 public class LoginController(DBcontext Logindb, JwtService JWT) : ControllerBase
 {
-    [HttpPost("login")]
+    [HttpPost]
     public ActionResult Login([FromBody] LoginModel logininfo)
     {
-        var user = Logindb.Users.FirstOrDefault(u =>
-            u.Email == logininfo.Email);
+        var user = Logindb.Users.Where(u =>
+            u.Email == logininfo.Email && u.PasswordHash == logininfo.Password);
 
         if (user == null)
         {
             return Unauthorized(new { message = "Invalid email or password." });
         }
 
-        var token = JWT.GenerateToken(user.Name, user.UserId.ToString());
-        var cookieOptions = new CookieOptions
-        {
-            HttpOnly = true, // Prevent JavaScript access (protects against XSS)
-            Secure = true, // Only send over HTTPS
-            SameSite = SameSiteMode.Strict, // Protects against CSRF
-            Expires = DateTime.UtcNow.AddHours(1) // Set expiration time
-        };
+        var token = JWT.GenerateToken(username: user.FirstOrDefault().Name,
+            userid: user.FirstOrDefault().UserId.ToString());
 
-        Response.Cookies.Append("jwt", token, cookieOptions);
 
-        return Ok(new { message = "Login successful!" });
+        return Ok(new { message = "Login successful!", JwtToken = token.ToString() });
     }
 }

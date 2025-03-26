@@ -1,7 +1,7 @@
 "use client";
 
 import { BaseURL, Savings } from "../utils/DBLinks";
-import { GetUserId, SavingsDbSchema } from "../utils/DbSchema";
+import {  GetUserDetails, SavingsDbSchema } from "../utils/DbSchema";
 import DataManager from "./DataManager";
 export default function SavingsPage() {
   return (
@@ -14,7 +14,7 @@ export default function SavingsPage() {
         put: Savings.Put,
         delete: Savings.Delete,
       }}
-      getUserId={GetUserId()}
+      getUserId={GetUserDetails().user_id}
       fields={[
         {
           name: "goalName",

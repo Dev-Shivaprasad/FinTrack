@@ -1,10 +1,11 @@
 ﻿using FinTrack.Model;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 
 namespace FinTrack.Controllers.Controllers;
-
+[Authorize]
 [Route("api/[controller]")]
 [ApiController]
 public class TransactionController(DBcontext Transactiondb) : ControllerBase
@@ -98,7 +99,7 @@ public class TransactionController(DBcontext Transactiondb) : ControllerBase
             updateTransaction.CreatedAt = existingTransaction.CreatedAt;
 
             // Update only necessary fields (avoid full entity replacement)
-            existingTransaction.Type = updateTransaction.Type;
+            existingTransaction.Action = updateTransaction.Action;
             existingTransaction.Amount = updateTransaction.Amount;
             existingTransaction.Category = updateTransaction.Category;
             existingTransaction.UserId = updateTransaction.UserId;

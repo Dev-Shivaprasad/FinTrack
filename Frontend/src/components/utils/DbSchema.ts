@@ -72,13 +72,20 @@ export interface IncomeDbSchema {
 export interface TransactionDbSchema {
     transactionId: string;
     userId: string;
-    type: string;
-    amount: number;
-    date: string; // ISO format (YYYY-MM-DD)
     category: string;
+    amount: number;
+    action: string;
     createdAt: Date;
 }
+export type lspayload = {
+    userid: string,
+    username: string,
+    jwttoken: string
+}
+export function GetUserDetails() {
+    const data: lspayload = JSON.parse(localStorage.getItem("JwtToken") || "");
 
-export function GetUserId(): string {
-    return "24EC15D3-9D05-F011-95A4-18CC182F09B2"
-} 
+    return { jwt_token: data.jwttoken, user_id: data.userid, user_name: data.username }
+
+}
+

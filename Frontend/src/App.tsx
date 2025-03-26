@@ -1,3 +1,4 @@
+
 import BudgetingTool from "./components/BudgetingTool";
 import Chart from "./components/Chart";
 import Download from "./components/Download";
@@ -11,16 +12,16 @@ import UserFriendly from "./components/UserFriendly";
 export default function App() {
   return (
     <>
-      <ThemeToggle className="absolute top-10 flex w-full  items-center justify-center z-30 " />
+        <ThemeToggle className="absolute top-10 flex w-full  items-center justify-center z-30 " />
 
-      <Home />
-      <Chart />
-      <ExpenseTrack />
-      <IncomeManagement />
-      <BudgetingTool />
-      <SavingGoal />
-      <UserFriendly />
-      <Download />
+        <Home />
+        <Chart />
+        <ExpenseTrack />
+        <IncomeManagement />
+        <BudgetingTool />
+        <SavingGoal />
+        <UserFriendly />
+        <Download />
     </>
   );
 }

@@ -23,6 +23,9 @@ import ExpensesPage from "./Expenses";
 import DebtsPage from "./Debt";
 import IncomesPage from "./Income";
 import SavingsPage from "./Savings";
+import Transcations from "./Transcations";
+import { GetUserDetails } from "../utils/DbSchema";
+
 const componentMap: { [key: string]: JSX.Element } = {
   Home: <div>HI Its HOME</div>,
   Budgets: <BudgetsPage />,
@@ -31,12 +34,7 @@ const componentMap: { [key: string]: JSX.Element } = {
   Incomes: <IncomesPage />,
   Investments: <Investments />,
   Savings: <SavingsPage />,
-  "All Transactions": (
-    <div className="bg-primary text-accent flex justify-center items-center h-screen w-full text-6xl">
-      {" "}
-      Transactions
-    </div>
-  ),
+  "All Transactions": <Transcations />,
   Reports: (
     <div className="bg-primary text-accent flex justify-center items-center h-screen w-full text-6xl">
       {" "}
@@ -222,8 +220,7 @@ const TitleSection = ({ open }: { open: boolean }) => {
               transition={{ delay: 0.125 }}
             >
               <span className="block text-sm font-semibold font-Heading">
-                {JSON.parse(localStorage.getItem("Cred") ?? "{}").username ||
-                  "Username"}
+                {GetUserDetails().user_name}
               </span>
               <span className="block text-xs text-slate-500">beta</span>
             </motion.div>
@@ -243,9 +240,7 @@ const Logo = () => {
       className="grid text-xl font-Heading size-10 shrink-0 place-content-center rounded-md bg-accent"
     >
       {/* <img width="24" height="auto" className="fill-slate-50"></img> */}
-      {JSON.parse(
-        localStorage.getItem("Cred") ?? "{}"
-      ).username?.[0].toUpperCase() || "U"}
+      {GetUserDetails().user_name[0].toUpperCase() || "U"}
     </motion.div>
   );
 };

@@ -1,9 +1,6 @@
-"use client"
-
-import { BaseURL, Income } from "../utils/DBLinks"
-import { GetUserId, IncomeDbSchema } from "../utils/DbSchema"
-import DataManager from "./DataManager"
-
+import { BaseURL, Income } from "../utils/DBLinks";
+import {  GetUserDetails, IncomeDbSchema } from "../utils/DbSchema";
+import DataManager from "./DataManager";
 
 export default function IncomesPage() {
   return (
@@ -16,7 +13,7 @@ export default function IncomesPage() {
         put: Income.Put,
         delete: Income.Delete,
       }}
-      getUserId={GetUserId()}
+      getUserId={GetUserDetails().user_id}
       fields={[
         {
           name: "source",
@@ -31,13 +28,6 @@ export default function IncomesPage() {
           required: true,
           min: 0,
         },
-        {
-            name: "Is Fixed",
-            label: "Amount",
-            type: "number",
-            required: true,
-            min: 0,
-          },
       ]}
       idField="incomeId"
       displayFields={[
@@ -62,6 +52,5 @@ export default function IncomesPage() {
         amount: 0,
       }}
     />
-  )
+  );
 }
-

@@ -1,7 +1,7 @@
 "use client"
 
 import { BaseURL, Investment } from "../utils/DBLinks"
-import { GetUserId, InvestmentDbSchema } from "../utils/DbSchema"
+import { GetUserDetails, InvestmentDbSchema } from "../utils/DbSchema"
 import DataManager from "./DataManager"
 
 export default function InvestmentsPage() {
@@ -15,7 +15,7 @@ export default function InvestmentsPage() {
         put: Investment.Put,
         delete: Investment.Delete,
       }}
-      getUserId={GetUserId()}
+      getUserId={GetUserDetails().user_id}
       fields={[
         {
           name: "type",

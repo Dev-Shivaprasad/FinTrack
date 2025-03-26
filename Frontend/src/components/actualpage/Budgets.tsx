@@ -1,7 +1,7 @@
 "use client";
 
 import { BaseURL, Budget } from "../utils/DBLinks";
-import { BudgetDbSchema, GetUserId } from "../utils/DbSchema";
+import { BudgetDbSchema, GetUserDetails } from "../utils/DbSchema";
 import DataManager from "./DataManager";
 
 export default function BudgetsPage() {
@@ -15,7 +15,7 @@ export default function BudgetsPage() {
         put: Budget.Put,
         delete: Budget.Delete,
       }}
-      getUserId={GetUserId()}
+      getUserId={GetUserDetails().user_id}
       fields={[
         {
           name: "monthYear",

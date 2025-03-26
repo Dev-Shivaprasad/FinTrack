@@ -1,7 +1,6 @@
-"use client"
 
 import { BaseURL, Expense } from "../utils/DBLinks"
-import { ExpenseDbSchema, GetUserId } from "../utils/DbSchema"
+import { ExpenseDbSchema, GetUserDetails } from "../utils/DbSchema"
 import DataManager from "./DataManager"
 export default function ExpensesPage() {
   return (
@@ -14,7 +13,7 @@ export default function ExpensesPage() {
         put: Expense.Put,
         delete: Expense.Delete,
       }}
-      getUserId={GetUserId()}
+      getUserId={GetUserDetails().user_id}
       fields={[
         {
           name: "category",

@@ -1,10 +1,12 @@
 ﻿using FinTrack.Model;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 
 namespace FinTrack.Controllers.Controllers;
 
+[Authorize]
 [Route("api/[controller]")]
 [ApiController]
 public class DebtController(DBcontext Debtdb) : ControllerBase
@@ -94,14 +96,12 @@ public class DebtController(DBcontext Debtdb) : ControllerBase
             if (existingDebt == null)
                 return NotFound(new { message = "Debt record not found." });
 
-            // Preserve CreatedAt from the existing record
             updateDebt.CreatedAt = existingDebt.CreatedAt;
-
-            // Update only necessary fields (avoid full entity replacement)
+            existingDebt.UserId = updateDebt.UserId;
             existingDebt.Lender = updateDebt.Lender;
             existingDebt.AmountOwed = updateDebt.AmountOwed;
+            existingDebt.InterestRate = updateDebt.InterestRate;
             existingDebt.DueDate = updateDebt.DueDate;
-            existingDebt.UserId = updateDebt.UserId;
 
             await Debtdb.SaveChangesAsync();
 

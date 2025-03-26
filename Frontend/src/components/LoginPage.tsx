@@ -6,15 +6,18 @@ import Button from "./Button";
 import { loadtheme } from "./utils/Loadtheme";
 import { BaseURL, Login, User } from "./utils/DBLinks";
 import Goto from "./utils/GOTO";
-
-import CryptoJS from "crypto-js";
 import toast, { Toaster } from "react-hot-toast";
+import { jwtDecode } from "jwt-decode";
 
 type FormData = {
   username?: string;
   email: string;
   password: string;
   confirmPassword?: string;
+};
+type JWTPAYLOAD = {
+  username: string;
+  id: string;
 };
 
 const AuthForm: React.FC = () => {
@@ -31,32 +34,33 @@ const AuthForm: React.FC = () => {
   } = useForm<FormData>();
 
   const onSubmit: SubmitHandler<FormData> = async (data) => {
-    let hashedpassword = CryptoJS.SHA512(data.password).toString();
     isLogin
       ? await axios
           .post(BaseURL + Login.Post, {
             email: data.email,
-            password: hashedpassword,
+            password: data.password,
           })
-          .then((_) => Goto({ Link: "/dashboard" }))
-          .catch(
-            (err) =>
-              `Something Went Boom : ${
-                err.status === 404
-                  ?( toast.error(
-                      "User Not Found Either the Email or Password is Incorrect"
-                    ), console.log("email : " + data.email + "  --  " + "password : " + data.password + "  --  " + "Hashed password : " + hashedpassword))
-                    
-                  : err.status === 500
-                  ? toast.error("Server Error")
-                  : toast.error("Server Down :(")
-              }`
-          )
+          .then((da) => {
+            localStorage.setItem(
+              "JwtToken",
+              JSON.stringify({
+                jwttoken: da.data.jwtToken,
+                userid: jwtDecode<JWTPAYLOAD>(da.data.jwtToken).id,
+                username: jwtDecode<JWTPAYLOAD>(da.data.jwtToken).username,
+              })
+            );
+            return da;
+          })
+          .then((msg) => toast(msg.data.message))
+          .then(() => Goto({ Link: "/dashboard" }))
+          .catch((err) => {
+            toast("Login Error:", err);
+          })
       : await axios
           .post(BaseURL + User.Post, {
             name: data.username,
             email: data.email,
-            passwordHash: hashedpassword,
+            passwordHash: data.password,
           })
           .then((_) => {
             setIsLogin(!isLogin),

@@ -6,6 +6,7 @@ using Microsoft.EntityFrameworkCore;
 
 namespace FinTrack.Controllers
 {
+    [Authorize]
     [Route("api/[controller]")]
     [ApiController]
     public class UserController(DBcontext Userreg) : ControllerBase
@@ -39,6 +40,7 @@ namespace FinTrack.Controllers
             }
         }
 
+        [AllowAnonymous]
         [HttpPost]
         public async Task<ActionResult<object>> PostUser(UserModel user)
         {

@@ -23,16 +23,16 @@ public class JwtService
         _expiryMinutes = int.Parse(jwtSettings["ExpiryMinutes"]);
     }
 
-    public string GenerateToken(string username, String userid)
+    public string GenerateToken(string username, string userid)
     {
         var securityKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(_secret));
         var credentials = new SigningCredentials(securityKey, SecurityAlgorithms.HmacSha512);
 
         var claims = new[]
         {
-            new Claim(JwtRegisteredClaimNames.Sub, username),
-            new Claim(JwtRegisteredClaimNames.Jti, Guid.NewGuid().ToString()),
-            new Claim(JwtRegisteredClaimNames.AtHash, userid) // Custom claim
+            new Claim(JwtRegisteredClaimNames.Exp, _expiryMinutes.ToString()),
+            new Claim("id", userid),
+            new Claim("username", username),
         };
 
         var token = new JwtSecurityToken(

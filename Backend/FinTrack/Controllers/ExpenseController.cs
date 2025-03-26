@@ -1,10 +1,11 @@
 ﻿using FinTrack.Model;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 
 namespace FinTrack.Controllers.Controllers;
-
+[Authorize]
 [Route("api/[controller]")]
 [ApiController]
 public class ExpenseController(DBcontext Expensedb) : ControllerBase
