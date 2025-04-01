@@ -49,7 +49,7 @@ export default function ExpensesPage() {
         {
           name: "amount",
           label: "Amount",
-          format: (value) => `₹ ${value}`,
+          format: (value) => `₹ ${value.toLocaleString()}`,
         },
         {
           name: "dateSpent",

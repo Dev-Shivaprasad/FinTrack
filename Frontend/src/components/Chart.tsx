@@ -1,5 +1,3 @@
-import { motion } from "motion/react";
-
 import { PieChart, Pie, Cell, Tooltip, ResponsiveContainer } from "recharts";
 const data = [
   { name: "Food", value: 400, color: "#1E3A32" },
@@ -27,13 +25,7 @@ export default function FinancialDashboard() {
           Visually engaging charts, graphs, and progress bars provide an
           at-a-glance understanding.
         </p>
-        <motion.div
-          initial={{ opacity: 0, rotate: 50 }}
-          whileInView={{ opacity: 1, rotate: 0 }}
-          transition={{ delay: 0.5 }}
-          exit={{ opacity: 0, rotate: 50 }}
-          className="w-full h-[300px] flex justify-center mt-6"
-        >
+        <div className="w-full h-[300px] flex justify-center mt-6">
           <ResponsiveContainer width="100%" height="100%">
             <PieChart>
               <Pie
@@ -52,7 +44,7 @@ export default function FinancialDashboard() {
               <Tooltip />
             </PieChart>
           </ResponsiveContainer>
-        </motion.div>
+        </div>
         <div className="  flex flex-wrap justify-center gap-4 mt-6">
           {data.map((item, index) => (
             <div key={index} className="flex items-center space-x-2">

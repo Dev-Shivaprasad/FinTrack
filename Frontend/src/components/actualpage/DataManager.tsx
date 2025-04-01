@@ -7,8 +7,9 @@ import DatePicker from "react-datepicker";
 import "react-datepicker/dist/react-datepicker.css";
 import { Maximize2, ChevronDown, Pencil, Trash2 } from "lucide-react";
 import axios from "axios";
-import toast, { Toaster } from "react-hot-toast";
+import toast from "react-hot-toast";
 import { GetUserDetails } from "../utils/DbSchema";
+import Goto from "../utils/GOTO";
 
 // Generic type for all financial data types
 type FinancialData = {
@@ -39,7 +40,7 @@ interface FinancialTrackerProps<T extends FinancialData> {
   displayFields: {
     name: keyof T;
     label: string;
-    format?: (value: any, item?: any) => string;
+    format?: (value: any) => string;
   }[];
   formatDate?: (date: string) => string;
   defaultValues: Partial<T>;
@@ -73,7 +74,13 @@ export default function DataManager<T extends FinancialData>({
         },
       })
       .then((response) => setData(response.data))
-      .catch((err) => console.log(err));
+      .catch((err) =>
+        err.status === 401
+          ? (toast("Your Session has expired please Re-Login"),
+            localStorage.removeItem("JwtToken"),
+            Goto({ Link: "/" }))
+          : console.log(err)
+      );
   }
 
   useEffect(() => {
@@ -162,7 +169,6 @@ export default function DataManager<T extends FinancialData>({
 
   return (
     <div className="min-h-screen flex flex-col justify-center bg-background p-4 sm:p-6 md:p-8 space-y-6">
-      <Toaster />
       {/* Form Section */}
       <motion.div
         initial={{ opacity: 0, y: 20 }}

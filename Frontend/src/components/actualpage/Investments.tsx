@@ -54,7 +54,7 @@ export default function InvestmentsPage() {
         {
           name: "amount",
           label: "Amount",
-          format: (value) => `₹ ${value}`,
+          format: (value) => `₹ ${value.toLocaleString()}`,
         },
         {
           name: "dateInvested",

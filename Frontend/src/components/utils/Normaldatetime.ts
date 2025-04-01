@@ -4,7 +4,7 @@ export default function normaldatetime(isoDate: string | undefined) {
         const date = new Date(isoDate);
 
         // Convert to a readable format
-        return date.toLocaleString();
+        return date.toLocaleString("en-GB");
     }
     return ""
 }

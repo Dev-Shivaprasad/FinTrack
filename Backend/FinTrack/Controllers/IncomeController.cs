@@ -1,10 +1,12 @@
-﻿using FinTrack.Model;
+﻿using FinTrack.BusinessLogics;
+using FinTrack.Model;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 
 namespace FinTrack.Controllers;
+
 [Authorize]
 [Route("api/[controller]")]
 [ApiController]

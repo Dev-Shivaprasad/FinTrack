@@ -78,14 +78,36 @@ export interface TransactionDbSchema {
     createdAt: Date;
 }
 export type lspayload = {
-    userid: string,
-    username: string,
-    jwttoken: string
-}
+    userid: string;
+    username: string;
+    jwttoken: string;
+};
+
 export function GetUserDetails() {
-    const data: lspayload = JSON.parse(localStorage.getItem("JwtToken") || "");
+    const dataString = localStorage.getItem("JwtToken");
 
-    return { jwt_token: data.jwttoken, user_id: data.userid, user_name: data.username }
+    // Check if data is available and parse it
+    if (dataString) {
+        try {
+            const data: lspayload = JSON.parse(dataString);
+            return { jwt_token: data.jwttoken, user_id: data.userid, user_name: data.username };
+        } catch (e) {
+            console.error("Failed to parse JWT token data", e);
+            return { jwt_token: "", user_id: "", user_name: "" };
+        }
+    }
 
+    return { jwt_token: "", user_id: "", user_name: "" };
+}
+
+
+export function CurrentSelectedTab(Tab?: string) {
+    if (Tab) {
+
+        localStorage.setItem("CurrentTab", Tab || "Home")
+    }
+
+
+    return localStorage.getItem("CurrentTab") || "Home"
 }
 

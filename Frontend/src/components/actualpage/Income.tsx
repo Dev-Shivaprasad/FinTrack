@@ -38,12 +38,12 @@ export default function IncomesPage() {
         {
           name: "amount",
           label: "Amount",
-          format: (value) => `₹ ${value}`,
+          format: (value) => `₹ ${value.toLocaleString()}`,
         },
         {
           name: "createdAt",
           label: "Date",
-          format: (value) => new Date(value).toLocaleDateString(),
+          format: (value) => new Date(value).toLocaleDateString("en-GB"),
         },
       ]}
       defaultValues={{

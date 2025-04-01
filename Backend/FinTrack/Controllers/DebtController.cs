@@ -118,7 +118,7 @@ public class DebtController(DBcontext Debtdb) : ControllerBase
                 new { message = "An error occurred while updating Debt.", error = ex.Message });
         }
     }
-
+    
     [HttpDelete("{id}")]
     public async Task<IActionResult> DeleteDebt(Guid id)
     {

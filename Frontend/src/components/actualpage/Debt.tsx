@@ -52,7 +52,7 @@ export default function DebtsPage() {
         {
           name: "amountOwed",
           label: "Amount Owed",
-          format: (value) => `₹ ${value}`,
+          format: (value) => `₹ ${value.toLocaleString()}`,
         },
         {
           name: "interestRate",
@@ -62,9 +62,9 @@ export default function DebtsPage() {
         {
           name: "dueDate",
           label: "Due Date",
+          format: (value) => (value)
         },
       ]}
-      formatDate={normaldatetime}
       defaultValues={{
         userId: "",
         lender: "",

@@ -61,8 +61,10 @@ export enum User {
     Put = "User/",
     Delete = "User/",
 }
-export enum Transactions {
+export enum Transaction {
     Get = "Transactions",
     GetById = "Transactions/",
     GetByUserId = "Transactions/byuser/",
+    Post = "Transaction",
+
 }

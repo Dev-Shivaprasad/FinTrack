@@ -1,7 +1,7 @@
 "use client";
 
 import { BaseURL, Savings } from "../utils/DBLinks";
-import {  GetUserDetails, SavingsDbSchema } from "../utils/DbSchema";
+import { GetUserDetails, SavingsDbSchema } from "../utils/DbSchema";
 import DataManager from "./DataManager";
 export default function SavingsPage() {
   return (
@@ -46,17 +46,17 @@ export default function SavingsPage() {
         {
           name: "targetAmount",
           label: "Target",
-          format: (value) => `₹ ${value}`,
+          format: (value) => `₹ ${value.toLocaleString()}`,
         },
         {
           name: "currentAmount",
           label: "Current",
-          format: (value) => `₹ ${value}`,
+          format: (value) => `₹ ${value.toLocaleString()}`,
         },
         {
           name: "currentAmount",
           label: "Progress",
-          format: (value) => `${value} %`,
+          format: (value) => `${value.toLocaleString()}`,
         },
       ]}
       defaultValues={{

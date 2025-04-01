@@ -24,7 +24,9 @@ import DebtsPage from "./Debt";
 import IncomesPage from "./Income";
 import SavingsPage from "./Savings";
 import Transcations from "./Transcations";
-import { GetUserDetails } from "../utils/DbSchema";
+import { CurrentSelectedTab, GetUserDetails } from "../utils/DbSchema";
+import Avatar from "../Avatar";
+import { Toaster } from "react-hot-toast";
 
 const componentMap: { [key: string]: JSX.Element } = {
   Home: <div>HI Its HOME</div>,
@@ -44,16 +46,21 @@ const componentMap: { [key: string]: JSX.Element } = {
 };
 
 export const DashBoardApp = () => {
-  const [selected, setSelected] = useState("Debts");
+  const [selected, setSelected] = useState(CurrentSelectedTab());
   return (
-    <div className="flex h-screen bg-background">
-      <ThemeToggle className="absolute top-5 flex w-full  items-center justify-center z-30 " />
+    <>
+      <Toaster />
 
-      <Sidebar selected={selected} setSelected={setSelected} />
-      <div className="flex-1 h-screen overflow-x-hidden ">
-        {componentMap[selected] || <div>ERROR</div>}
+      <div className="flex h-screen bg-background">
+        <Sidebar
+          selected={CurrentSelectedTab(selected)}
+          setSelected={setSelected}
+        />
+        <div className="flex-1 h-screen overflow-x-hidden ">
+          {componentMap[selected] || <div>ERROR</div>}
+        </div>
       </div>
-    </div>
+    </>
   );
 };
 
@@ -67,82 +74,91 @@ const Sidebar = ({
   const [open, setOpen] = useState(true);
 
   return (
-    <motion.nav
-      layout
-      className="sticky top-0 shrink-0 border-r border-accent bg-primary p-2 overflow-auto"
-      style={{
-        width: open ? "225px" : "fit-content",
-      }}
-    >
-      <TitleSection open={open} />
-      <div className="flex flex-col flex-wrap">
-        <Option
-          Icon={FiHome}
-          title="Home"
-          selected={selected}
-          setSelected={setSelected}
-          open={open}
-        />
-        <Option
-          Icon={MdOutlineAccountBalanceWallet}
-          title="Budgets"
-          selected={selected}
-          setSelected={setSelected}
-          open={open}
-          notifs={3}
-        />
-        <Option
-          Icon={BiTrendingUp}
-          title="Debts"
-          selected={selected}
-          setSelected={setSelected}
-          open={open}
-        />
-        <Option
-          Icon={FaMoneyBillWave}
-          title="Expenses"
-          selected={selected}
-          setSelected={setSelected}
-          open={open}
-        />
-        <Option
-          Icon={MdAttachMoney}
-          title="Incomes"
-          selected={selected}
-          setSelected={setSelected}
-          open={open}
-        />
-        <Option
-          Icon={AiOutlineFundProjectionScreen}
-          title="Investments"
-          selected={selected}
-          setSelected={setSelected}
-          open={open}
-        />
-        <Option
-          Icon={MdOutlineSavings}
-          title="Savings"
-          selected={selected}
-          setSelected={setSelected}
-          open={open}
-        />
-        <Option
-          Icon={BiTransfer}
-          title="All Transactions"
-          selected={selected}
-          setSelected={setSelected}
-          open={open}
-        />
-        <Option
-          Icon={FiBarChart}
-          title="Reports"
-          selected={selected}
-          setSelected={setSelected}
-          open={open}
-        />
-      </div>
-      <ToggleClose open={open} setOpen={setOpen} />
-    </motion.nav>
+    <>
+      <ThemeToggle
+        className={cn(
+          "absolute top-5 w-fit z-30 ",
+          open ? "md:left-70 sm:hidden " : "left-30"
+        )}
+      />
+      <Avatar ClassName=" absolute top-5 right-16 w-fit z-30" />
+      <motion.nav
+        layout
+        className="sticky top-0 shrink-0 border-r border-accent bg-primary p-2 overflow-auto"
+        style={{
+          width: open ? "225px" : "fit-content",
+        }}
+      >
+        <TitleSection open={open} />
+        <div className="flex flex-col flex-wrap">
+          <Option
+            Icon={FiHome}
+            title="Home"
+            selected={selected}
+            setSelected={setSelected}
+            open={open}
+          />
+          <Option
+            Icon={MdOutlineAccountBalanceWallet}
+            title="Budgets"
+            selected={selected}
+            setSelected={setSelected}
+            open={open}
+            notifs={3}
+          />
+          <Option
+            Icon={BiTrendingUp}
+            title="Debts"
+            selected={selected}
+            setSelected={setSelected}
+            open={open}
+          />
+          <Option
+            Icon={FaMoneyBillWave}
+            title="Expenses"
+            selected={selected}
+            setSelected={setSelected}
+            open={open}
+          />
+          <Option
+            Icon={MdAttachMoney}
+            title="Incomes"
+            selected={selected}
+            setSelected={setSelected}
+            open={open}
+          />
+          <Option
+            Icon={AiOutlineFundProjectionScreen}
+            title="Investments"
+            selected={selected}
+            setSelected={setSelected}
+            open={open}
+          />
+          <Option
+            Icon={MdOutlineSavings}
+            title="Savings"
+            selected={selected}
+            setSelected={setSelected}
+            open={open}
+          />
+          <Option
+            Icon={BiTransfer}
+            title="All Transactions"
+            selected={selected}
+            setSelected={setSelected}
+            open={open}
+          />
+          <Option
+            Icon={FiBarChart}
+            title="Reports"
+            selected={selected}
+            setSelected={setSelected}
+            open={open}
+          />
+        </div>
+        <ToggleClose open={open} setOpen={setOpen} />
+      </motion.nav>
+    </>
   );
 };
 
@@ -220,7 +236,9 @@ const TitleSection = ({ open }: { open: boolean }) => {
               transition={{ delay: 0.125 }}
             >
               <span className="block text-sm font-semibold font-Heading">
-                {GetUserDetails().user_name}
+                {GetUserDetails().user_name.length >= 17
+                  ? GetUserDetails().user_name.slice(0, 17) + "..."
+                  : GetUserDetails().user_name}
               </span>
               <span className="block text-xs text-slate-500">beta</span>
             </motion.div>

@@ -5,6 +5,7 @@ using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 
 namespace FinTrack.Controllers.Controllers;
+
 [Authorize]
 [Route("api/[controller]")]
 [ApiController]
@@ -95,10 +96,7 @@ public class ExpenseController(DBcontext Expensedb) : ControllerBase
             if (existingExpense == null)
                 return NotFound(new { message = "Expense record not found." });
 
-            // Preserve CreatedAt from the existing record
             updateExpense.CreatedAt = existingExpense.CreatedAt;
-
-            // Update only necessary fields (avoid full entity replacement)
             existingExpense.Category = updateExpense.Category;
             existingExpense.Amount = updateExpense.Amount;
             existingExpense.DateSpent = updateExpense.DateSpent;
