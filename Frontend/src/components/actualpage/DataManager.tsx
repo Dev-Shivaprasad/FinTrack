@@ -8,8 +8,11 @@ import "react-datepicker/dist/react-datepicker.css";
 import { Maximize2, ChevronDown, Pencil, Trash2 } from "lucide-react";
 import axios from "axios";
 import toast from "react-hot-toast";
-import { GetUserDetails } from "../utils/DbSchema";
 import Goto from "../utils/GOTO";
+import useSound from "use-sound";
+import { AuthHeaders } from "../utils/DBLinks";
+import { Vibrate } from "../utils/Helperfunction";
+import { Credit } from "../utils/AudioSources";
 
 // Generic type for all financial data types
 type FinancialData = {
@@ -40,10 +43,11 @@ interface FinancialTrackerProps<T extends FinancialData> {
   displayFields: {
     name: keyof T;
     label: string;
-    format?: (value: any) => string;
+    format?: (value: any, row?: T) => string;
   }[];
   formatDate?: (date: string) => string;
   defaultValues: Partial<T>;
+  AudioSource?: string;
 }
 
 export default function DataManager<T extends FinancialData>({
@@ -54,25 +58,22 @@ export default function DataManager<T extends FinancialData>({
   fields,
   idField,
   displayFields,
+  AudioSource = Credit,
   formatDate = (date) => new Date(date).toLocaleDateString(),
   defaultValues,
 }: FinancialTrackerProps<T>) {
+  const [playaudio] = useSound(AudioSource);
   const [data, setData] = useState<T[]>([]);
-  const [update, setUpdate] = useState<{
-    state: boolean;
-    id: string | null;
-  }>({ state: false, id: null });
+  const [update, setUpdate] = useState<{ state: boolean; id: string | null }>({
+    state: false,
+    id: null,
+  });
   const [isFormCollapsed, setIsFormCollapsed] = useState(false);
   const [isTableCollapsed, setIsTableCollapsed] = useState(false);
 
   function fetchData() {
     axios
-      .get(baseURL + endpoints.getByUserId + getUserId, {
-        headers: {
-          Authorization: `bearer ${GetUserDetails().jwt_token}`,
-          "Content-Type": "application/json",
-        },
-      })
+      .get(baseURL + endpoints.getByUserId + getUserId, AuthHeaders)
       .then((response) => setData(response.data))
       .catch((err) =>
         err.status === 401
@@ -99,26 +100,27 @@ export default function DataManager<T extends FinancialData>({
 
   function deleteItem(id: string) {
     axios
-      .delete(baseURL + endpoints.delete + id, {
-        headers: {
-          Authorization: `bearer ${GetUserDetails().jwt_token}`,
-          "Content-Type": "application/json",
-        },
+      .delete(baseURL + endpoints.delete + id, AuthHeaders)
+      .then(() => {
+        toast.success("Deleted Successfully"), playaudio();
       })
-      .then((_) => toast.success("Deleted Successfully"))
-      .then((_) => fetchData())
+      .then(() => fetchData())
       .catch((err) => toast.error("Error: " + err));
   }
 
   function updateItem(item: T) {
-    reset(item as any);
+    const updatedItem = { ...item };
+    fields.forEach((field) => {
+      if (field.type === "boolean") {
+        (updatedItem as any)[field.name] = item[field.name] ? true : false;
+      }
+    });
+    reset(updatedItem as any);
     setUpdate({ state: true, id: item[idField] as string });
   }
 
   const onSubmit = (formData: T) => {
-    // Process date fields if needed
     const processedData = { ...formData };
-
     fields.forEach((field) => {
       if (field.type === "date" && processedData[field.name]) {
         const dateValue = new Date(processedData[field.name] as string);
@@ -127,44 +129,31 @@ export default function DataManager<T extends FinancialData>({
           .split("T")[0] as any;
       }
     });
-
-    // Add userId
     processedData.userId = getUserId;
 
-    if (update.state) {
-      axios
-        .put(baseURL + endpoints.put + update.id, processedData, {
-          headers: {
-            Authorization: `bearer ${GetUserDetails().jwt_token}`,
-            "Content-Type": "application/json",
-          },
-        })
-        .then((_) => toast.success("Updated Successfully"))
-        .then((_) => fetchData())
-        .catch((err) => {
-          toast.error("Error: " + err);
-          console.log(processedData);
-        });
+    const request = update.state
+      ? axios.put(
+          baseURL + endpoints.put + update.id,
+          processedData,
+          AuthHeaders
+        )
+      : axios.post(baseURL + endpoints.post, processedData, AuthHeaders);
 
-      reset(defaultValues as any);
-      setUpdate({ state: false, id: null });
-    } else {
-      axios
-        .post(baseURL + endpoints.post, processedData, {
-          headers: {
-            Authorization: `bearer ${GetUserDetails().jwt_token}`,
-            "Content-Type": "application/json",
-          },
-        })
-        .then((_) => toast.success("Added Successfully"))
-        .then((_) => fetchData())
-        .catch((err) => {
-          toast.error("Error: " + err);
-          console.log(processedData);
-        });
+    request
+      .then(() => {
+        toast.success(
+          update.state ? "Updated Successfully" : "Added Successfully"
+        ),
+          playaudio();
+      })
+      .then(() => fetchData())
+      .then(() => reset(defaultValues as any))
+      .catch((err) => {
+        toast.error("Error: " + err);
+        console.log(processedData);
+      });
 
-      reset(defaultValues as any);
-    }
+    if (update.state) setUpdate({ state: false, id: null });
   };
 
   return (
@@ -227,9 +216,9 @@ export default function DataManager<T extends FinancialData>({
                               onChange={(date) =>
                                 controllerField.onChange(date)
                               }
-                              className="w-full px-3 py-2 bg-gray-100 border-2 border-black rounded-lg 
-                              shadow-[2px_2px_0px_0px_rgba(0,0,0,1)] focus:shadow-[4px_4px_0px_0px_rgba(0,0,0,1)] 
-                              transition-all focus:outline-none text-black"
+                              className="w-full px-3 py-2 bg-gray-100 border-2 border-black rounded-lg
+                                shadow-[2px_2px_0px_0px_rgba(0,0,0,1)] focus:shadow-[4px_4px_0px_0px_rgba(0,0,0,1)]
+                                transition-all focus:outline-none text-black"
                               placeholderText={`Select ${field.label.toLowerCase()}`}
                               dateFormat="MMMM d, yyyy"
                               calendarClassName="!border-black !shadow-[4px_4px_0px_0px_rgba(0,0,0,1)]"
@@ -242,6 +231,7 @@ export default function DataManager<T extends FinancialData>({
                             required: field.required
                               ? `${field.label} is required`
                               : false,
+                            setValueAs: (v) => (v === "true" ? true : false),
                           })}
                           className="w-full px-3 py-2 bg-secondary border-2 border-black rounded-lg shadow-[2px_2px_0px_0px_rgba(0,0,0,1)] focus:shadow-[4px_4px_0px_0px_rgba(0,0,0,1)] transition-all focus:outline-none"
                         >
@@ -267,6 +257,7 @@ export default function DataManager<T extends FinancialData>({
                       ) : (
                         <input
                           type={field.type}
+                          step={field.type === "number" ? "any" : undefined} // allow decimals if number
                           onWheel={(e) =>
                             field.type === "number" &&
                             e.target instanceof HTMLElement &&
@@ -283,7 +274,7 @@ export default function DataManager<T extends FinancialData>({
                                     message: `${field.label} must be at least ${field.min}`,
                                   }
                                 : undefined,
-                            valueAsNumber: field.type === "number",
+                            valueAsNumber: field.type === "number", // automatically parses to float
                           })}
                           className="w-full px-3 py-2 bg-secondary border-2 border-black rounded-lg shadow-[2px_2px_0px_0px_rgba(0,0,0,1)] focus:shadow-[4px_4px_0px_0px_rgba(0,0,0,1)] transition-all focus:outline-none"
                           placeholder={`Enter ${field.label.toLowerCase()}`}
@@ -311,6 +302,9 @@ export default function DataManager<T extends FinancialData>({
                     Reset
                   </button>
                   <button
+                    onClick={() => {
+                      Vibrate();
+                    }}
                     type="submit"
                     className="px-4 py-2 bg-primary border-2 border-black rounded-lg font-bold text-bgbg-secondary shadow-[2px_2px_0px_0px_rgba(0,0,0,1)] hover:shadow-[4px_4px_0px_0px_rgba(0,0,0,1)] transition-all active:shadow-[0px_0px_0px_0px_rgba(0,0,0,1)] active:translate-x-[4px] active:translate-y-[4px]"
                   >
@@ -366,19 +360,22 @@ export default function DataManager<T extends FinancialData>({
                         className="bg-secondary border-2 border-black rounded-lg p-4 shadow-[2px_2px_0px_0px_rgba(0,0,0,1)]"
                       >
                         <div className="flex justify-between items-start mb-2">
-                          <div className="font-bold text-text">
+                          <div className="font-bold">
                             {displayFields[0]
                               ? displayFields[0].format
                                 ? displayFields[0].format(
-                                    item[displayFields[0].name]
+                                    item[displayFields[0].name],
+                                    item // Passing the full item as row
                                   )
                                 : item[displayFields[0].name]
                               : item[idField]}
                           </div>
                           <div className="flex space-x-2">
                             <button
-                              onClick={() => updateItem(item)}
-                              className="p-1 bg-blue-500 text-white border-2 border-black rounded-lg shadow-[2px_2px_0px_0px_rgba(0,0,0,1)] hover:shadow-[4px_4px_0px_0px_rgba(0,0,0,1)] transition-all active:shadow-[0px_0px_0px_0px_rgba(0,0,0,1)] active:translate-x-[4px] active:translate-y-[4px]"
+                              onClick={() => {
+                                updateItem(item);
+                              }}
+                              className="p-1 bg-blue-500 text-white border-_2px_0px_0px_rgba(0,0,0,1)] hover:shadow-[4px_4px_0px_0px_rgba(0,0,0,1)] transition-all active:shadow-[0px_0px_0px_0px_rgba(0,0,0,1)] active:translate-x-[4px] active:translate-y-[4px]"
                             >
                               <Pencil size={16} />
                             </button>
@@ -407,7 +404,7 @@ export default function DataManager<T extends FinancialData>({
                               </span>
                               <span className="ml-2 text-text">
                                 {field.format
-                                  ? field.format(item[field.name])
+                                  ? field.format(item[field.name], item)
                                   : field.name.toString().includes("date") ||
                                     field.name.toString().includes("Date")
                                   ? formatDate(item[field.name] as string)
@@ -458,7 +455,7 @@ export default function DataManager<T extends FinancialData>({
                                 className="px-6 py-4 whitespace-nowrap text-sm font-bold text-gray-900"
                               >
                                 {field.format
-                                  ? field.format(item[field.name])
+                                  ? field.format(item[field.name], item)
                                   : field.name.toString().includes("date") ||
                                     field.name.toString().includes("Date")
                                   ? formatDate(item[field.name] as string)

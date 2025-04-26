@@ -1,10 +1,13 @@
-﻿using FinTrack.Model;
+﻿using FinTrack.Dto;
+using FinTrack.Model;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.EntityFrameworkCore.Internal;
 
 namespace FinTrack.Controllers.Controllers;
+
 [Authorize]
 [Route("api/[controller]")]
 [ApiController]
@@ -42,16 +45,29 @@ public class TransactionController(DBcontext Transactiondb) : ControllerBase
         }
     }
 
-    [HttpGet()]
+    [HttpGet]
     [Route("byuser/{UserId}")]
-    public async Task<ActionResult<TransactionsModel>> GetTransactionByUserId(Guid UserId)
+    public async Task<ActionResult<TransactionsDto>> GetTransactionByUserId(Guid UserId)
     {
         try
         {
-            var transaction = await Transactiondb.Transactions.Where(id => id.UserId == UserId).ToListAsync();
-            if (transaction == null) return NotFound(new { message = "Transaction record not found." });
+            var transactions = await Transactiondb.Transactions
+                .Where(t => t.UserId == UserId)
+                .ToListAsync();
 
-            return Ok(transaction);
+            if (transactions == null || transactions.Count == 0)
+                return NotFound(new { message = "Transaction record not found." });
+
+            var transactionDtos = transactions.Select(t => new TransactionsDto
+            {
+                TransactionId = t.TransactionId,
+                SourceCategory = t.SourceCategory,
+                Amount = t.Amount,
+                TransactionType = ((TransactionEnum.Transactionenum)t.TransactionType).ToString(),
+                FinanceType = t.FinanceType,
+            }).ToList();
+
+            return Ok(transactionDtos);
         }
         catch (Exception ex)
         {
@@ -99,10 +115,12 @@ public class TransactionController(DBcontext Transactiondb) : ControllerBase
             updateTransaction.CreatedAt = existingTransaction.CreatedAt;
 
             // Update only necessary fields (avoid full entity replacement)
-            existingTransaction.Action = updateTransaction.Action;
+            existingTransaction.TransactionType = updateTransaction.TransactionType;
             existingTransaction.Amount = updateTransaction.Amount;
-            existingTransaction.Category = updateTransaction.Category;
+            existingTransaction.SourceCategory = updateTransaction.SourceCategory;
             existingTransaction.UserId = updateTransaction.UserId;
+            existingTransaction.FinanceType = updateTransaction.FinanceType;
+
 
             await Transactiondb.SaveChangesAsync();
 

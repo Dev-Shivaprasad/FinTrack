@@ -1,4 +1,5 @@
-﻿using FinTrack.Model;
+﻿using FinTrack.Dto;
+using FinTrack.Model;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
@@ -11,6 +12,9 @@ namespace FinTrack.Controllers.Controllers;
 [ApiController]
 public class ExpenseController(DBcontext Expensedb) : ControllerBase
 {
+    AddTransactions t = new AddTransactions(Expensedb, FinanceType:"Expense");
+
+
     [HttpGet]
     public async Task<ActionResult<IEnumerable<ExpenseModel>>> GetAllExpenses()
     {
@@ -45,14 +49,24 @@ public class ExpenseController(DBcontext Expensedb) : ControllerBase
 
     [HttpGet()]
     [Route("byuser/{UserId}")]
-    public async Task<ActionResult<ExpenseModel>> GetExpenseByUserId(Guid UserId)
+    public async Task<ActionResult<ExpenseDto>> GetExpenseByUserId(Guid UserId)
     {
         try
         {
             var expense = await Expensedb.Expenses.Where(id => id.UserId == UserId).ToListAsync();
             if (expense == null) return NotFound(new { message = "Expense record not found." });
 
-            return Ok(expense);
+            var d = expense.Select(exp => new ExpenseDto()
+            {
+                UserId = exp.UserId,
+                Amount = exp.Amount,
+                CreatedAt = exp.CreatedAt,
+                ExpenseId = exp.ExpenseId,
+                IsFixed = exp.IsFixed ? "Yes" : "No",
+                Category = exp.Category,
+                DateSpent = exp.DateSpent,
+            }).ToList();
+            return Ok(d);
         }
         catch (Exception ex)
         {
@@ -70,6 +84,13 @@ public class ExpenseController(DBcontext Expensedb) : ControllerBase
                 return BadRequest(new { message = "Invalid Debt data provided." });
 
             Expensedb.Expenses.Add(addExpense);
+            t.AddTransaction(new TransactionsModel()
+            {
+                UserId = addExpense.UserId,
+                TransactionType = 1,
+                Amount = addExpense.Amount,
+                SourceCategory = addExpense.Category
+            });
             await Expensedb.SaveChangesAsync();
 
             return CreatedAtAction(nameof(GetExpense), new { id = addExpense.ExpenseId }, addExpense);
@@ -87,7 +108,7 @@ public class ExpenseController(DBcontext Expensedb) : ControllerBase
     }
 
     [HttpPut("{id}")]
-    public async Task<IActionResult> PutDebt(Guid id, ExpenseModel updateExpense)
+    public async Task<IActionResult> PutExpense(Guid id, ExpenseModel updateExpense)
     {
         try
         {
@@ -102,7 +123,13 @@ public class ExpenseController(DBcontext Expensedb) : ControllerBase
             existingExpense.DateSpent = updateExpense.DateSpent;
             existingExpense.IsFixed = updateExpense.IsFixed;
             existingExpense.UserId = updateExpense.UserId;
-
+            t.AddTransaction(new TransactionsModel()
+            {
+                UserId = updateExpense.UserId,
+                TransactionType = 2,
+                Amount = updateExpense.Amount,
+                SourceCategory = updateExpense.Category,
+            });
             await Expensedb.SaveChangesAsync();
 
             return Ok(new { message = "Expense updated successfully." });
@@ -125,17 +152,24 @@ public class ExpenseController(DBcontext Expensedb) : ControllerBase
         try
         {
             var Expense = await Expensedb.Expenses.FindAsync(id);
-            if (Expense == null) return NotFound(new { message = "Dept record not found." });
+            if (Expense == null) return NotFound(new { message = "Expense record not found." });
 
             Expensedb.Expenses.Remove(Expense);
+            t.AddTransaction(new TransactionsModel()
+            {
+                UserId = Expense.UserId,
+                TransactionType = 3,
+                Amount = Expense.Amount,
+                SourceCategory = Expense.Category,
+            });
             await Expensedb.SaveChangesAsync();
 
-            return Ok(new { message = "Dept record deleted successfully." });
+            return Ok(new { message = "Expense record deleted successfully." });
         }
         catch (Exception ex)
         {
             return StatusCode(StatusCodes.Status500InternalServerError,
-                new { message = "An error occurred while deleting Debt.", error = ex.Message });
+                new { message = "An error occurred while deleting Expense.", error = ex.Message });
         }
     }
 }

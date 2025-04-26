@@ -1,6 +1,17 @@
 @import "tailwindcss";
 
 
+/* *[title]:hover::after {
+
+  position: absolute;
+  content: attr(title);
+  font-size: 10px;
+  overflow: visible;
+  background-color: var(--color-accent);
+  padding: 5px;
+  border-radius: 5px;
+} */
+
 @theme {
   --breakpoint-sm: 350px;
 }
@@ -29,6 +40,23 @@ html.light {
   --color-accent: oklch(91.86% 0.097 155.75);
 }
 
+.gp>* {
+  margin-top: 10px;
+  margin-bottom: 10px;
+}
+
+li {
+margin-top: 20px;
+margin-bottom: 20px;
+}
+
+li::before{
+  content: "-> ";
+}
+
+strong{
+  font-size: large;
+}
 
 img,
 video {
@@ -164,10 +192,10 @@ a[href]:any-link {
   display: none;
 }
 
-input[type=number]::-webkit-inner-spin-button, 
-input[type=number]::-webkit-outer-spin-button { 
-    -webkit-appearance: none;
-    -moz-appearance: none;
-    appearance: none;
-    margin: 0; 
+input[type=number]::-webkit-inner-spin-button,
+input[type=number]::-webkit-outer-spin-button {
+  -webkit-appearance: none;
+  -moz-appearance: none;
+  appearance: none;
+  margin: 0;
 }

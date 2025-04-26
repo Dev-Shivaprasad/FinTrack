@@ -4,10 +4,10 @@ import { motion } from "motion/react";
 import axios from "axios";
 import Button from "./Button";
 import { loadtheme } from "./utils/Loadtheme";
-import { BaseURL, Login, User } from "./utils/DBLinks";
+import { BaseURL, Login, Users } from "./utils/DBLinks";
 import Goto from "./utils/GOTO";
 import toast, { Toaster } from "react-hot-toast";
-import { jwtDecode } from "jwt-decode";
+import { SHA512 } from "crypto-js";
 
 type FormData = {
   username?: string;
@@ -15,10 +15,7 @@ type FormData = {
   password: string;
   confirmPassword?: string;
 };
-type JWTPAYLOAD = {
-  username: string;
-  id: string;
-};
+
 
 const AuthForm: React.FC = () => {
   useEffect(() => {
@@ -38,29 +35,24 @@ const AuthForm: React.FC = () => {
       ? await axios
           .post(BaseURL + Login.Post, {
             email: data.email,
-            password: data.password,
+            password: await SHA512(data.password).toString(),
           })
           .then((da) => {
-            localStorage.setItem(
-              "JwtToken",
-              JSON.stringify({
-                jwttoken: da.data.jwtToken,
-                userid: jwtDecode<JWTPAYLOAD>(da.data.jwtToken).id,
-                username: jwtDecode<JWTPAYLOAD>(da.data.jwtToken).username,
-              })
-            );
+            localStorage.setItem("JwtToken", da.data.jwtToken);
             return da;
           })
           .then((msg) => toast(msg.data.message))
           .then(() => Goto({ Link: "/dashboard" }))
           .catch((err) => {
-            toast("Login Error:", err);
+            if (err.status === 404) {
+              toast("user Does not exist please register"), setIsLogin(false);
+            }
           })
       : await axios
-          .post(BaseURL + User.Post, {
+          .post(BaseURL + Users.Post, {
             name: data.username,
             email: data.email,
-            passwordHash: data.password,
+            passwordHash: await SHA512(data.password).toString(),
           })
           .then((_) => {
             setIsLogin(!isLogin),

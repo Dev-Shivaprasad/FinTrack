@@ -5,11 +5,14 @@ using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 
 namespace FinTrack.Controllers.Controllers;
+
 [Authorize]
 [Route("api/[controller]")]
 [ApiController]
 public class SavingsController(DBcontext Savingsdb) : ControllerBase
 {
+    AddTransactions t = new AddTransactions(Savingsdb, FinanceType: "Savings");
+
     [HttpGet]
     public async Task<ActionResult<IEnumerable<SavingsModel>>> GetAllSavings()
     {
@@ -69,6 +72,13 @@ public class SavingsController(DBcontext Savingsdb) : ControllerBase
                 return BadRequest(new { message = "Invalid Saving data provided." });
 
             Savingsdb.Savings.Add(addSaving);
+            t.AddTransaction(new TransactionsModel()
+            {
+                UserId = addSaving.UserId,
+                TransactionType = 1,
+                Amount = addSaving.CurrentAmount,
+                SourceCategory = addSaving.GoalName,
+            });
             await Savingsdb.SaveChangesAsync();
 
             return CreatedAtAction(nameof(GetSaving), new { id = addSaving.SavingId }, addSaving);
@@ -103,7 +113,13 @@ public class SavingsController(DBcontext Savingsdb) : ControllerBase
             existingSaving.TargetAmount = updateSaving.TargetAmount;
             existingSaving.CurrentAmount = updateSaving.CurrentAmount;
             existingSaving.UserId = updateSaving.UserId;
-
+            t.AddTransaction(new TransactionsModel()
+            {
+                UserId = updateSaving.UserId,
+                TransactionType = 2,
+                Amount = updateSaving.CurrentAmount,
+                SourceCategory = updateSaving.GoalName,
+            });
             await Savingsdb.SaveChangesAsync();
 
             return Ok(new { message = "Saving updated successfully." });
@@ -129,6 +145,13 @@ public class SavingsController(DBcontext Savingsdb) : ControllerBase
             if (Saving == null) return NotFound(new { message = "Saving record not found." });
 
             Savingsdb.Savings.Remove(Saving);
+            t.AddTransaction(new TransactionsModel()
+            {
+                UserId = Saving.UserId,
+                TransactionType = 3,
+                Amount = Saving.CurrentAmount,
+                SourceCategory = Saving.GoalName,
+            });
             await Savingsdb.SaveChangesAsync();
 
             return Ok(new { message = "Saving record deleted successfully." });

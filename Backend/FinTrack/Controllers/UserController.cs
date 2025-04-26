@@ -6,7 +6,6 @@ using Microsoft.EntityFrameworkCore;
 
 namespace FinTrack.Controllers
 {
-    [Authorize]
     [Route("api/[controller]")]
     [ApiController]
     public class UserController(DBcontext Userreg) : ControllerBase

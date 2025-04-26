@@ -1,7 +1,14 @@
+import { motion } from "motion/react";
+
 export default function BudgetingTool() {
   return (
     <div className="flex w-full justify-center items-center min-h-screen bg-background p-6">
-      <div className="grid md:grid-cols-2 items-center max-w-5xl bg-secondary mx-auto mt-14 rounded-2xl border-2 border-text/50 shadow-[4px_4px_0px_0px_var(--color-text)] hover:shadow-[8px_8px_0px_0px_var(--color-text)] transition-all">
+      <motion.div
+        initial={{ opacity: 0 }}
+        whileInView={{ opacity: 1 }}
+        transition={{ ease: "easeInOut", duration: 1.5 }}
+        className="grid md:grid-cols-2 items-center max-w-5xl bg-secondary mx-auto mt-14 rounded-2xl border-2 border-text/50 shadow-[4px_4px_0px_0px_var(--color-text)] hover:shadow-[8px_8px_0px_0px_var(--color-text)] transition-all"
+      >
         <div className="p-10">
           <h2 className="text-4xl font-bold font-Heading text-primary">
             Budgeting Tools: <br />
@@ -39,7 +46,7 @@ export default function BudgetingTool() {
             <div className="absolute inset-0 bg-gradient-to-b from-secondary via-transparent to-transparent md:bg-gradient-to-r " />
           </div>
         </div>
-      </div>
+      </motion.div>
     </div>
   );
 }

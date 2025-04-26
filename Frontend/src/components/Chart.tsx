@@ -1,3 +1,4 @@
+import { motion } from "motion/react";
 import { PieChart, Pie, Cell, Tooltip, ResponsiveContainer } from "recharts";
 const data = [
   { name: "Food", value: 400, color: "#1E3A32" },
@@ -12,7 +13,12 @@ export default function FinancialDashboard() {
       id="nxt"
       className="w-full flex items-center justify-center min-h-screen bg-secondary p-4"
     >
-      <div className="max-w-4xl w-full  mx-auto bg-background mt-14 rounded-2xl border-2 border-text/50 shadow-[4px_4px_0px_0px_var(--color-text)] hover:shadow-[8px_8px_0px_0px_var(--color-text)] transition-all">
+      <motion.div
+        initial={{ opacity: 0 }}
+        whileInView={{ opacity: 1 }}
+        transition={{ease: "easeInOut", duration:1.5}}
+        className="max-w-4xl w-full  mx-auto bg-background mt-14 rounded-2xl border-2 border-text/50 shadow-[4px_4px_0px_0px_var(--color-text)] hover:shadow-[8px_8px_0px_0px_var(--color-text)] transition-all"
+      >
         <h2 className="text-2xl font-bold text-primary text-center font-Heading">
           {" "}
           Dashboard: Your Financial Snapshot
@@ -60,7 +66,7 @@ export default function FinancialDashboard() {
           Users who actively track finances save an average of{" "}
           <strong>$6,000</strong> per year.
         </p>
-      </div>
+      </motion.div>
     </div>
   );
 }

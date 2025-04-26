@@ -11,6 +11,8 @@ namespace FinTrack.Controllers;
 [ApiController]
 public class BudgetController(DBcontext Budgetdb) : ControllerBase
 {
+    AddTransactions t = new AddTransactions(Budgetdb, FinanceType: "Budget");
+
     [HttpGet]
     public async Task<ActionResult<IEnumerable<BudgetModel>>> GetAllBudgets()
     {
@@ -68,12 +70,15 @@ public class BudgetController(DBcontext Budgetdb) : ControllerBase
         {
             if (addBudget == null)
                 return BadRequest(new { message = "Invalid budget data provided." });
-
-            addBudget.BudgetId = Guid.NewGuid();
-
             Budgetdb.Budgets.Add(addBudget);
+            t.AddTransaction(new TransactionsModel()
+            {
+                UserId = addBudget.UserId,
+                TransactionType = 1,
+                Amount = addBudget.AllocatedAmount,
+                SourceCategory = addBudget.Category
+            });
             await Budgetdb.SaveChangesAsync();
-
             return CreatedAtAction(nameof(GetBudget), new { id = addBudget.BudgetId }, addBudget);
         }
         catch (DbUpdateException dbEx)
@@ -109,6 +114,13 @@ public class BudgetController(DBcontext Budgetdb) : ControllerBase
             existingBudget.AllocatedAmount = updateBudget.AllocatedAmount;
             existingBudget.UserId = updateBudget.UserId; // Ensure valid FK reference
 
+            t.AddTransaction(new TransactionsModel()
+            {
+                UserId = updateBudget.UserId,
+                TransactionType = 2,
+                Amount = updateBudget.AllocatedAmount,
+                SourceCategory = updateBudget.Category
+            });
             await Budgetdb.SaveChangesAsync();
 
             return Ok(new { message = "Budget updated successfully." });
@@ -133,8 +145,15 @@ public class BudgetController(DBcontext Budgetdb) : ControllerBase
         {
             var budget = await Budgetdb.Budgets.FindAsync(id);
             if (budget == null) return NotFound(new { message = "Budget record not found." });
-
+            var data = await Budgetdb.Budgets.Where(x => x.BudgetId == budget.BudgetId).FirstOrDefaultAsync();
             Budgetdb.Budgets.Remove(budget);
+            t.AddTransaction(new TransactionsModel()
+            {
+                UserId = budget.UserId,
+                TransactionType = 3,
+                Amount = budget.AllocatedAmount,
+                SourceCategory = budget.Category
+            });
             await Budgetdb.SaveChangesAsync();
 
             return Ok(new { message = "Budget record deleted successfully." });

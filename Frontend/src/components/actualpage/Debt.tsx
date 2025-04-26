@@ -1,6 +1,7 @@
+import { Debit } from "../utils/AudioSources";
 import { BaseURL, Debt } from "../utils/DBLinks";
 import { DebtDbSchema, GetUserDetails } from "../utils/DbSchema";
-import normaldatetime from "../utils/Normaldatetime";
+import { getTimeLeft } from "../utils/Normaldatetime";
 import DataManager from "./DataManager";
 
 export default function DebtsPage() {
@@ -62,7 +63,13 @@ export default function DebtsPage() {
         {
           name: "dueDate",
           label: "Due Date",
-          format: (value) => (value)
+          format: (value) => new Date(value).toDateString(),
+        },
+        {
+          name: "dueDate",
+          label: "TimeLeft",
+          format: (value) =>
+            getTimeLeft(value).value + "  " + getTimeLeft(value).unit,
         },
       ]}
       defaultValues={{
@@ -72,6 +79,7 @@ export default function DebtsPage() {
         interestRate: 0,
         dueDate: "",
       }}
+      AudioSource={Debit}
     />
   );
 }

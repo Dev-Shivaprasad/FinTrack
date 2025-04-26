@@ -1,4 +1,30 @@
+import { GetUserDetails } from "./DbSchema"
+
 export const BaseURL = "https://localhost:7155/api/"
+// export const BaseURL = "https://localhost:5115/api/"
+// export const BaseURL = "https://sjc0spz8-5115.inc1.devtunnels.ms/api/"
+export const AIURL = "http://localhost:8000/api/"
+// export const AIURL = "http://localhost:8000/api/"
+
+
+export const AuthHeaders = {
+    headers: {
+        Authorization: `bearer ${GetUserDetails().jwt_token}`,
+        "Content-Type": "application/json",
+    },
+}
+
+
+export enum PyAiprompt {
+    Post = "AnalyzeFinancialData/"
+}
+
+export enum getpromptdata {
+    Get = "GenerateTransactionPrompt/"
+}
+export enum getreportdata {
+    Get = "Report/byuser/"
+}
 
 export enum Budget {
     Get = "Budget",
@@ -54,7 +80,7 @@ export enum Savings {
     Put = "Savings/",
     Delete = "Savings/",
 }
-export enum User {
+export enum Users {
     Get = "User",
     GetById = "User/",
     Post = "User",
@@ -62,9 +88,9 @@ export enum User {
     Delete = "User/",
 }
 export enum Transaction {
-    Get = "Transactions",
-    GetById = "Transactions/",
-    GetByUserId = "Transactions/byuser/",
+    Get = "Transaction",
+    GetById = "Transaction/",
+    GetByUserId = "Transaction/byuser/",
     Post = "Transaction",
 
 }

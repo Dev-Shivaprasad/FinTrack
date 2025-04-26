@@ -11,6 +11,8 @@ namespace FinTrack.Controllers.Controllers;
 [ApiController]
 public class DebtController(DBcontext Debtdb) : ControllerBase
 {
+    AddTransactions t = new AddTransactions(Debtdb, FinanceType:"Debt");
+
     [HttpGet]
     public async Task<ActionResult<IEnumerable<DebtModel>>> GetAllDebts()
     {
@@ -70,6 +72,13 @@ public class DebtController(DBcontext Debtdb) : ControllerBase
                 return BadRequest(new { message = "Invalid Debt data provided." });
 
             Debtdb.Debts.Add(addDebt);
+            t.AddTransaction(new TransactionsModel()
+            {
+                UserId = addDebt.UserId,
+                TransactionType = 1,
+                Amount = addDebt.AmountOwed,
+                SourceCategory = addDebt.Lender
+            });
             await Debtdb.SaveChangesAsync();
 
             return CreatedAtAction(nameof(GetDebt), new { id = addDebt.DebtId }, addDebt);
@@ -102,7 +111,13 @@ public class DebtController(DBcontext Debtdb) : ControllerBase
             existingDebt.AmountOwed = updateDebt.AmountOwed;
             existingDebt.InterestRate = updateDebt.InterestRate;
             existingDebt.DueDate = updateDebt.DueDate;
-
+            t.AddTransaction(new TransactionsModel()
+            {
+                UserId = updateDebt.UserId,
+                TransactionType = 2,
+                Amount = updateDebt.AmountOwed,
+                SourceCategory = updateDebt.Lender,
+            });
             await Debtdb.SaveChangesAsync();
 
             return Ok(new { message = "Debt updated successfully." });
@@ -118,7 +133,7 @@ public class DebtController(DBcontext Debtdb) : ControllerBase
                 new { message = "An error occurred while updating Debt.", error = ex.Message });
         }
     }
-    
+
     [HttpDelete("{id}")]
     public async Task<IActionResult> DeleteDebt(Guid id)
     {
@@ -127,6 +142,13 @@ public class DebtController(DBcontext Debtdb) : ControllerBase
             var Debt = await Debtdb.Debts.FindAsync(id);
             if (Debt == null) return NotFound(new { message = "Debt record not found." });
 
+            t.AddTransaction(new TransactionsModel()
+            {
+                UserId = Debt.UserId,
+                TransactionType = 3,
+                Amount = Debt.AmountOwed,
+                SourceCategory = Debt.Lender,
+            });
             Debtdb.Debts.Remove(Debt);
             await Debtdb.SaveChangesAsync();
 

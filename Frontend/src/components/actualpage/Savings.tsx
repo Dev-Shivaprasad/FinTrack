@@ -55,8 +55,8 @@ export default function SavingsPage() {
         },
         {
           name: "currentAmount",
-          label: "Progress",
-          format: (value) => `${value.toLocaleString()}`,
+          label: "goal amount to collect",
+          format: (value, row) => ((row?.targetAmount || 0) - value).toLocaleString(),
         },
       ]}
       defaultValues={{

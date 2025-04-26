@@ -1,19 +1,32 @@
-import { ChevronDown, Maximize2 } from "lucide-react";
+import {
+  ArrowDownRight,
+  ArrowUpRight,
+  ChevronDown,
+  Maximize2,
+  Minus,
+} from "lucide-react";
 import { AnimatePresence, motion } from "motion/react";
 import { useEffect, useState } from "react";
 import { GetUserDetails, TransactionDbSchema } from "../utils/DbSchema";
 import axios from "axios";
-import { BaseURL, Transaction } from "../utils/DBLinks";
-import toast from "react-hot-toast";
+import { AuthHeaders, BaseURL, Transaction } from "../utils/DBLinks";
+import Downloadtopdf from "./Downloadtopdf";
+import { Drawer } from "../Modal";
+import Getsuggestions from "./Getsuggestions";
 
 export default function Transactions() {
   const [transactionList, setTransactionList] = useState<TransactionDbSchema[]>(
     []
   );
 
+  transactionList.reverse();
+
   useEffect(() => {
     axios
-      .get(`${BaseURL}${Transaction.GetByUserId}${GetUserDetails().user_id}`)
+      .get(
+        `${BaseURL}${Transaction.GetByUserId}${GetUserDetails().user_id}`,
+        AuthHeaders
+      )
       .then((data) => setTransactionList(data.data));
   }, []);
 
@@ -23,7 +36,7 @@ export default function Transactions() {
     <motion.div
       initial={{ opacity: 0, y: 20 }}
       animate={{ opacity: 1, y: 0 }}
-      className="mt-10 mx-auto w-full bg-primary rounded-2xl border-2 border-black shadow-[4px_4px_0px_0px_rgba(90,90,90,1)] hover:shadow-[8px_8px_0px_0px_rgba(90,90,90,1)] transition-all"
+      className="mt-20 mx-auto w-[80%] lg:w-[95%] bg-primary rounded-2xl border-2 border-black shadow-[4px_4px_0px_0px_rgba(90,90,90,1)] hover:shadow-[8px_8px_0px_0px_rgba(90,90,90,1)] transition-all"
     >
       <div className="p-6">
         <div className="flex justify-between items-center mb-6">
@@ -63,11 +76,10 @@ export default function Transactions() {
                     >
                       <div className="flex justify-between items-start mb-2">
                         <div className="font-bold text-text">
-                          {item.category}
+                          {item.sourceCategory}
                         </div>
-                      </div>
-                      <div className="grid grid-cols-2 gap-2 text-sm">
-                        {item.amount}
+                        <div className="">₹ {item.amount}</div>
+                        <div className="">{item.transactionType}</div>
                       </div>
                     </motion.div>
                   ))}
@@ -82,10 +94,13 @@ export default function Transactions() {
                           ID
                         </th>
                         <th className="px-6 py-3 text-left text-xs font-black text-text/70 uppercase tracking-wider">
-                          Category
+                          Source
                         </th>
                         <th className="px-6 py-3 text-left text-xs font-black text-text/70 uppercase tracking-wider">
                           Amount
+                        </th>
+                        <th className="px-6 py-3 text-left text-xs font-black text-text/70 uppercase tracking-wider">
+                          TransactionType
                         </th>
                         <th className="px-6 py-3 text-left text-xs font-black text-text/70 uppercase tracking-wider">
                           Actions
@@ -104,13 +119,22 @@ export default function Transactions() {
                             {item.transactionId}
                           </td>
                           <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-500">
-                            {item.category}
+                            {item.sourceCategory}
                           </td>
                           <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-500">
-                            {item.amount}
+                            ₹ {item.amount}
                           </td>
                           <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-500">
-                            {item.action}
+                            {item.financeType}
+                          </td>
+                          <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-500">
+                            {item.transactionType == "add" ? (
+                              <ArrowDownRight className="text-green-500 border rounded-full " />
+                            ) : item.transactionType == "update" ? (
+                              <Minus className="text-yellow-500 border rounded-full " />
+                            ) : (
+                              <ArrowUpRight className="text-red-500 border rounded-full " />
+                            )}
                           </td>
                         </motion.tr>
                       ))}
@@ -121,23 +145,12 @@ export default function Transactions() {
             </motion.div>
           )}
         </AnimatePresence>
+        <Downloadtopdf />
+        <Drawer
+          Buttonname="Get Personalised AI suggestion"
+          Elementtoshow={Getsuggestions}
+        />
       </div>
     </motion.div>
   );
-}
-
-export function AddToTransactions({
-  action,
-  amount,
-  category,
-}: TransactionDbSchema) {
-  axios
-    .post(BaseURL + Transaction.Post, {
-      userId: GetUserDetails().user_id,
-      category: category,
-      amount: amount,
-      action: action,
-    })
-    .then((_) => toast("Transaction added"))
-    .catch((err) => toast(err));
 }

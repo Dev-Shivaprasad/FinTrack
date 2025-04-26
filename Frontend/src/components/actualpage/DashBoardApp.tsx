@@ -2,7 +2,7 @@ import { Dispatch, JSX, SetStateAction, useState } from "react";
 import { IconType } from "react-icons";
 import {
   FiBarChart,
-  FiChevronDown,
+  // FiChevronDown,
   FiChevronsRight,
   FiHome,
 } from "react-icons/fi";
@@ -10,7 +10,7 @@ import { FaMoneyBillWave } from "react-icons/fa";
 import {
   MdAttachMoney,
   MdOutlineSavings,
-  MdOutlineAccountBalanceWallet,
+  // MdOutlineAccountBalanceWallet,
 } from "react-icons/md";
 import { BiTrendingUp, BiTransfer } from "react-icons/bi";
 import { AiOutlineFundProjectionScreen } from "react-icons/ai";
@@ -27,9 +27,11 @@ import Transcations from "./Transcations";
 import { CurrentSelectedTab, GetUserDetails } from "../utils/DbSchema";
 import Avatar from "../Avatar";
 import { Toaster } from "react-hot-toast";
-
+import Home from "./Home";
+import Reports from "./Reports";
+// import Getsuggestions from "./Getsuggestions";
 const componentMap: { [key: string]: JSX.Element } = {
-  Home: <div>HI Its HOME</div>,
+  Home: <Home />,
   Budgets: <BudgetsPage />,
   Debts: <DebtsPage />,
   Expenses: <ExpensesPage />,
@@ -37,12 +39,7 @@ const componentMap: { [key: string]: JSX.Element } = {
   Investments: <Investments />,
   Savings: <SavingsPage />,
   "All Transactions": <Transcations />,
-  Reports: (
-    <div className="bg-primary text-accent flex justify-center items-center h-screen w-full text-6xl">
-      {" "}
-      Reports
-    </div>
-  ),
+  Reports: <Reports />,
 };
 
 export const DashBoardApp = () => {
@@ -57,7 +54,7 @@ export const DashBoardApp = () => {
           setSelected={setSelected}
         />
         <div className="flex-1 h-screen overflow-x-hidden ">
-          {componentMap[selected] || <div>ERROR</div>}
+          {componentMap[selected] || <div>Error</div>}
         </div>
       </div>
     </>
@@ -71,7 +68,7 @@ const Sidebar = ({
   selected: string;
   setSelected: Dispatch<SetStateAction<string>>;
 }) => {
-  const [open, setOpen] = useState(true);
+  const [open, setOpen] = useState(false);
 
   return (
     <>
@@ -81,16 +78,24 @@ const Sidebar = ({
           open ? "md:left-70 sm:hidden " : "left-30"
         )}
       />
-      <Avatar ClassName=" absolute top-5 right-16 w-fit z-30" />
+      <Avatar
+        ClassName={cn(
+          " absolute top-5 right-16 w-fit z-30",
+          open ? "md:left-70 sm:hidden w-full" : ""
+        )}
+      />
       <motion.nav
         layout
-        className="sticky top-0 shrink-0 border-r border-accent bg-primary p-2 overflow-auto"
-        style={{
-          width: open ? "225px" : "fit-content",
-        }}
+        className={cn(
+          "sticky top-0 shrink-0 border-r border-accent bg-primary p-2 overflow-auto",
+          open ? "w-full md:w-[225px]" : "fit-content",
+          "flex flex-col items-center wfull"
+        )}
       >
         <TitleSection open={open} />
-        <div className="flex flex-col flex-wrap">
+        <div
+          className="flex flex-col flex-wrap w-full"
+        >
           <Option
             Icon={FiHome}
             title="Home"
@@ -98,14 +103,14 @@ const Sidebar = ({
             setSelected={setSelected}
             open={open}
           />
-          <Option
+          {/* <Option
             Icon={MdOutlineAccountBalanceWallet}
             title="Budgets"
             selected={selected}
             setSelected={setSelected}
             open={open}
             notifs={3}
-          />
+          /> */}
           <Option
             Icon={BiTrendingUp}
             title="Debts"
@@ -189,6 +194,7 @@ const Option = ({
       <motion.div
         layout
         className="grid h-full w-10 place-content-center text-lg"
+        title={title}
       >
         <Icon />
       </motion.div>
@@ -224,7 +230,7 @@ const Option = ({
 
 const TitleSection = ({ open }: { open: boolean }) => {
   return (
-    <div className="mb-3 border-b border-slate-300 pb-3">
+    <div className="mb-3 border-b border-slate-300 pb-3 w-full">
       <div className="flex cursor-pointer items-center justify-between rounded-md transition-colors hover:bg-secondary">
         <div className="flex items-center gap-2">
           <Logo />
@@ -244,7 +250,7 @@ const TitleSection = ({ open }: { open: boolean }) => {
             </motion.div>
           )}
         </div>
-        {open && <FiChevronDown className="mr-2" />}
+        {/* {open && <FiChevronDown className="mr-2" />} */}
       </div>
     </div>
   );

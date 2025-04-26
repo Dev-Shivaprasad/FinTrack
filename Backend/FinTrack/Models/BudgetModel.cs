@@ -8,7 +8,7 @@ namespace FinTrack.Model
     {
         [Key] public Guid BudgetId { get; set; }
         public Guid UserId { get; set; }
-        public string MonthYear { get; set; }
+        public DateOnly MonthYear { get; set; }
         public string Category { get; set; }
         [Column(TypeName = "decimal(18,2)")] public decimal AllocatedAmount { get; set; }
         public DateTime CreatedAt { get; set; }

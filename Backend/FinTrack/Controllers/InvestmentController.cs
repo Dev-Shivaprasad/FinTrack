@@ -5,11 +5,14 @@ using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 
 namespace FinTrack.Controllers.Controllers;
+
 [Authorize]
 [Route("api/[controller]")]
 [ApiController]
 public class InvestmentController(DBcontext Investmentdb) : ControllerBase
 {
+    AddTransactions t = new AddTransactions(Investmentdb, FinanceType: "Investment");
+
     [HttpGet]
     public async Task<ActionResult<IEnumerable<InvestmentModel>>> GetAllInvestments()
     {
@@ -69,6 +72,14 @@ public class InvestmentController(DBcontext Investmentdb) : ControllerBase
                 return BadRequest(new { message = "Invalid Debt data provided." });
 
             Investmentdb.Investments.Add(addInvestment);
+
+            t.AddTransaction(new TransactionsModel()
+            {
+                UserId = addInvestment.UserId,
+                TransactionType = 1,
+                Amount = addInvestment.Amount,
+                SourceCategory = addInvestment.Category + $"({addInvestment.SpecficDetails})",
+            });
             await Investmentdb.SaveChangesAsync();
 
             return CreatedAtAction(nameof(GetInvestment), new { id = addInvestment.InvestmentId }, addInvestment);
@@ -99,12 +110,20 @@ public class InvestmentController(DBcontext Investmentdb) : ControllerBase
             updateInvestment.CreatedAt = existingInvestment.CreatedAt;
 
             // Update only necessary fields (avoid full entity replacement)
-            existingInvestment.Type = updateInvestment.Type;
+            existingInvestment.Category = updateInvestment.Category;
+            existingInvestment.SpecficDetails = updateInvestment.SpecficDetails;
             existingInvestment.Amount = updateInvestment.Amount;
             existingInvestment.DateInvested = updateInvestment.DateInvested;
             existingInvestment.UserId = updateInvestment.UserId;
-
+            t.AddTransaction(new TransactionsModel()
+            {
+                UserId = updateInvestment.UserId,
+                TransactionType = 2,
+                Amount = updateInvestment.Amount,
+                SourceCategory = updateInvestment.Category + $"({updateInvestment.SpecficDetails})",
+            });
             await Investmentdb.SaveChangesAsync();
+
 
             return Ok(new { message = "Investment updated successfully." });
         }
@@ -127,8 +146,15 @@ public class InvestmentController(DBcontext Investmentdb) : ControllerBase
         {
             var Investment = await Investmentdb.Investments.FindAsync(id);
             if (Investment == null) return NotFound(new { message = "Investment record not found." });
-
-            Investmentdb.Investments.Remove(Investment);
+            var data =
+                Investmentdb.Investments.Remove(Investment);
+            t.AddTransaction(new TransactionsModel()
+            {
+                UserId = Investment.UserId,
+                TransactionType = 3,
+                Amount = Investment.Amount,
+                SourceCategory = Investment.Category + $"({Investment.SpecficDetails})",
+            });
             await Investmentdb.SaveChangesAsync();
 
             return Ok(new { message = "Investment record deleted successfully." });

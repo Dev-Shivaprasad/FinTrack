@@ -1,8 +1,8 @@
-"use client"
+"use client";
 
-import { BaseURL, Investment } from "../utils/DBLinks"
-import { GetUserDetails, InvestmentDbSchema } from "../utils/DbSchema"
-import DataManager from "./DataManager"
+import { BaseURL, Investment } from "../utils/DBLinks";
+import { GetUserDetails, InvestmentDbSchema } from "../utils/DbSchema";
+import DataManager from "./DataManager";
 
 export default function InvestmentsPage() {
   return (
@@ -18,7 +18,7 @@ export default function InvestmentsPage() {
       getUserId={GetUserDetails().user_id}
       fields={[
         {
-          name: "type",
+          name: "category",
           label: "Investment Type",
           type: "select",
           required: true,
@@ -27,8 +27,16 @@ export default function InvestmentsPage() {
             { value: "bonds", label: "Bonds" },
             { value: "realestate", label: "Real Estate" },
             { value: "crypto", label: "Cryptocurrency" },
-            { value: "other", label: "Other" },
+            { value: "mutualfund", label: "Mutual Fund" },
+            { value: "exchangetradedfunds", label: "Exchange Traded Funds" },
+            { value: "fixeddeposits", label: "Fixed Deposits" },
           ],
+        },
+        {
+          name: "specficDetails",
+          label: "Investment Details",
+          type: "text",
+          required: false,
         },
         {
           name: "amount",
@@ -47,9 +55,14 @@ export default function InvestmentsPage() {
       idField="investmentId"
       displayFields={[
         {
-          name: "type",
-          label: "Type",
+          name: "category",
+          label: "Category",
           format: (value) => value.charAt(0).toUpperCase() + value.slice(1),
+        },
+        {
+          name: "specficDetails",
+          label: "Details",
+          format: (value) => value,
         },
         {
           name: "amount",
@@ -59,15 +72,16 @@ export default function InvestmentsPage() {
         {
           name: "dateInvested",
           label: "Date Invested",
+          format: (value) => new Date(value).toDateString(),
         },
       ]}
       defaultValues={{
         userId: "",
-        type: "",
+        category: "",
+        specficDetails: "",
         amount: 0,
         dateInvested: "",
       }}
     />
-  )
+  );
 }
-

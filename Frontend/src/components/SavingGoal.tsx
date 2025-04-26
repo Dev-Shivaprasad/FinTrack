@@ -1,3 +1,5 @@
+import { motion } from "motion/react";
+
 const SavingGoal = () => {
   return (
     <div className="flex w-full min-h-fit h-[50vh] flex-col lg:flex-row items-center gap-8  bg-secondary">
@@ -11,7 +13,12 @@ const SavingGoal = () => {
           <div className="h-full w-full  bg-gradient-to-t from-secondary via-transparent to-transparent md:bg-gradient-to-l  " />
         </div>
       </div>
-      <div className="w-full lg:w-1/2 p-3">
+      <motion.div
+        initial={{ opacity: 0 }}
+        whileInView={{ opacity: 1 }}
+        transition={{ ease: "easeInOut", duration: 1.5 }}
+        className="w-full lg:w-1/2 p-3"
+      >
         <h2 className="text-3xl font-bold text-primary font-Heading">
           Savings Goals: Visualize Your Dreams
         </h2>
@@ -30,7 +37,7 @@ const SavingGoal = () => {
             Retirement
           </div>
         </div>
-      </div>
+      </motion.div>
     </div>
   );
 };

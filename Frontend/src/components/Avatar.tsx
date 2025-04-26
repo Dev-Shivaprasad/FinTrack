@@ -1,8 +1,24 @@
-import { motion } from "motion/react";
+import { AnimatePresence, motion } from "motion/react";
 import { Dispatch, SetStateAction, useEffect, useRef, useState } from "react";
 import { cn } from "./utils/utils";
 import { User } from "lucide-react";
 import Goto from "./utils/GOTO";
+import axios from "axios";
+import { BaseURL, Users } from "./utils/DBLinks";
+import { CurrentSelectedTab, GetUserDetails } from "./utils/DbSchema";
+import toast from "react-hot-toast";
+
+async function deleteuser() {
+  await axios
+    .delete(BaseURL + Users.Delete + GetUserDetails().user_id, {
+      headers: {
+        Authorization: `bearer ${GetUserDetails().jwt_token}`,
+        "Content-Type": "application/json",
+      },
+    })
+    .then((_) => Goto({ Link: "/" }))
+    .catch((err) => console.log(err));
+}
 
 const navitems = [
   {
@@ -10,18 +26,77 @@ const navitems = [
     Action: () => {
       Goto({ Link: "/" });
     },
+    textcolor: "",
   },
   {
     title: "Logout",
     Action: () => {
-      localStorage.removeItem("JwtToken"), Goto({ Link: "/" });
+      CurrentSelectedTab("Home"),
+        localStorage.removeItem("JwtToken"),
+        Goto({ Link: "/" });
     },
+    textcolor: "",
   },
   {
     title: "DashBoard",
     Action: () => {
       Goto({ Link: "/dashboard" });
     },
+    textcolor: "",
+  },
+  {
+    title: "DeleteUser",
+
+    Action: async () => {
+      toast.custom(
+        (t) => (
+          <AnimatePresence>
+            <motion.div
+              initial={{ y: -100 }}
+              animate={{ y: 0 }}
+              exit={{ y: -100 }}
+              className="bg-text p-3 rounded-lg shadow-lg"
+            >
+              <div className="text-center">
+                <p className="text-red-400">
+                  Are you sure you want to delete your Account?
+                </p>
+                <p className="text-red-700">
+                  all Your data Will be erased and cannot be reverted back
+                </p>
+              </div>
+              <div className="mt-2 flex justify-around">
+                <button
+                  className="bg-primary hover:bg-secondary text-text font-bold py-1 px-2 rounded-xl mr-2  cursor-pointer"
+                  onClick={() => {
+                    toast.dismiss();
+                  }}
+                >
+                  Cancel
+                </button>
+                <button
+                  className="bg-red-600 hover:bg-red-700 text-white font-bold py-1 px-2 rounded-xl cursor-pointer"
+                  onClick={() => {
+                    // Perform delete action here
+                    deleteuser();
+                    toast.success("Item deleted successfully!");
+                    toast.dismiss(t.id);
+                  }}
+                >
+                  Delete
+                </button>
+              </div>
+            </motion.div>
+          </AnimatePresence>
+        ),
+        {
+          id: "confirm-delete",
+          position: "top-center",
+          duration: 99999,
+        }
+      );
+    },
+    textcolor: "red",
   },
 ];
 
@@ -87,6 +162,7 @@ const AvatarDropdown = (props: { ClassName?: string }) => {
               setOpen={setOpen}
               key={index}
               title={item.title}
+              textcolor={item.textcolor}
               onClick={item.Action}
             />
           ))}
@@ -108,11 +184,13 @@ const AvatarDropdown = (props: { ClassName?: string }) => {
 
 const Option = ({
   title,
+  textcolor,
   setOpen,
   className,
   onClick,
 }: {
   title: string;
+  textcolor?: string;
   link?: string;
   setOpen: Dispatch<SetStateAction<boolean>>;
   className?: string;
@@ -130,7 +208,14 @@ const Option = ({
         className
       )}
     >
-      <div className="flex justify-center items-center gap-2">{title}</div>
+      <div
+        className={cn(
+          "flex justify-center items-center gap-2",
+          textcolor ? `text-${textcolor}-600` : ""
+        )}
+      >
+        {title}
+      </div>
     </motion.button>
   );
 };

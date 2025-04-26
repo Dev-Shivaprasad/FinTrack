@@ -43,7 +43,7 @@ export default function IncomesPage() {
         {
           name: "createdAt",
           label: "Date",
-          format: (value) => new Date(value).toLocaleDateString("en-GB"),
+          format : (value) => new Date(value).toDateString()
         },
       ]}
       defaultValues={{

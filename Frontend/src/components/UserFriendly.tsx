@@ -9,7 +9,11 @@ const features = [
 const UserFriendly = () => {
   return (
     <div className="flex w-full flex-col items-center justify-center min-h-screen p-6">
-      <div className="bg-secondary p-10 max-w-4xl mx-auto mt-14 rounded-2xl border-2 border-text/50 shadow-[4px_4px_0px_0px_var(--color-text)] hover:shadow-[8px_8px_0px_0px_var(--color-text)] transition-all">
+      <motion.div 
+       initial={{ opacity: 0 }}
+       whileInView={{ opacity: 1 }}
+       transition={{ease: "easeInOut", duration:1.5}}
+      className="bg-secondary p-10 max-w-4xl mx-auto mt-14 rounded-2xl border-2 border-text/50 shadow-[4px_4px_0px_0px_var(--color-text)] hover:shadow-[8px_8px_0px_0px_var(--color-text)] transition-all">
         <h2 className="text-3xl font-bold text-primary text-center">
           User-Friendly Design and Accessibility
         </h2>
@@ -30,7 +34,7 @@ const UserFriendly = () => {
                 key={index}
                 initial={{ opacity: 0, y: 30 }}
                 whileInView={{ opacity: 1, y: 0 }}
-                transition={{ duration: 0.6, delay: index * 0.2 }}
+                transition={{ duration: 0.6, delay: index * 0.4 }}
                 className="flex items-center h-30 w-full max-w-lg relative"
               >
                 {index % 2 === 0 ? (
@@ -52,7 +56,7 @@ const UserFriendly = () => {
             );
           })}
         </div>
-      </div>
+      </motion.div>
     </div>
   );
 };

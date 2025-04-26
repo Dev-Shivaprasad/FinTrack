@@ -1,7 +1,6 @@
-
-import { BaseURL, Expense } from "../utils/DBLinks"
-import { ExpenseDbSchema, GetUserDetails } from "../utils/DbSchema"
-import DataManager from "./DataManager"
+import { BaseURL, Expense } from "../utils/DBLinks";
+import { ExpenseDbSchema, GetUserDetails } from "../utils/DbSchema";
+import DataManager from "./DataManager";
 export default function ExpensesPage() {
   return (
     <DataManager<ExpenseDbSchema>
@@ -16,6 +15,7 @@ export default function ExpensesPage() {
       getUserId={GetUserDetails().user_id}
       fields={[
         {
+
           name: "category",
           label: "Category",
           type: "text",
@@ -43,6 +43,7 @@ export default function ExpensesPage() {
       idField="expenseId"
       displayFields={[
         {
+        
           name: "category",
           label: "Category",
         },
@@ -54,11 +55,12 @@ export default function ExpensesPage() {
         {
           name: "dateSpent",
           label: "Date Spent",
+          format : (value) => new Date(value).toDateString(),
         },
         {
           name: "isFixed",
           label: "Fixed Expense",
-          format: (value) => (value ? "Yes" : "No"),
+          format: (value) => value,
         },
       ]}
       defaultValues={{
@@ -69,6 +71,5 @@ export default function ExpensesPage() {
         isFixed: false,
       }}
     />
-  )
+  );
 }
-

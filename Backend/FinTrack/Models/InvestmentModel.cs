@@ -9,7 +9,8 @@ namespace FinTrack.Model
         [Key]
         public Guid InvestmentId { get; set; }
         public Guid UserId { get; set; }
-        public string Type { get; set; }
+        public string Category { get; set; }
+        public string? SpecficDetails { get; set; }
         [Column(TypeName ="decimal(18,2)")]
         public decimal Amount { get; set; }
         public DateOnly DateInvested { get; set; }
