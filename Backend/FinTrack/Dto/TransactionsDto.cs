@@ -19,6 +19,8 @@ public class TransactionsDto
     /// </summary>
     public string TransactionType { get; set; }
 
+    public DateTime? Date { get; set; }
+
     /// <summary>
     ///  (investment, debt, etc.).
     /// </summary>

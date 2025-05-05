@@ -6,6 +6,7 @@ using Microsoft.EntityFrameworkCore;
 
 namespace FinTrack.Controllers
 {
+    [Authorize]
     [Route("api/[controller]")]
     [ApiController]
     public class UserController(DBcontext Userreg) : ControllerBase
@@ -15,7 +16,15 @@ namespace FinTrack.Controllers
         {
             try
             {
-                return await Userreg.Users.ToListAsync();
+                var user = await Userreg.Users.ToListAsync();
+                return user.Select(User => new UserModel()
+                {
+                    UserId = User.UserId,
+                    CreatedAt = User.CreatedAt,
+                    Name = User.Name,
+                    Email = User.Email,
+                    PasswordHash = "xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx"
+                }).ToList();
             }
             catch (Exception ex)
             {
@@ -29,8 +38,16 @@ namespace FinTrack.Controllers
             try
             {
                 var user = await Userreg.Users.FindAsync(id);
+
                 if (user == null) return NotFound(new { message = "User not found." });
-                return user;
+                return new UserModel()
+                {
+                    UserId = user.UserId,
+                    CreatedAt = user.CreatedAt,
+                    Name = user.Name,
+                    Email = user.Email,
+                    PasswordHash = "xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx"
+                };
             }
             catch (Exception ex)
             {
@@ -108,7 +125,7 @@ namespace FinTrack.Controllers
 
                 Userreg.Users.Remove(user);
                 await Userreg.SaveChangesAsync();
-                return NoContent();
+                return StatusCode(204, new { message = "User deleted successfully." });
             }
             catch (Exception ex)
             {

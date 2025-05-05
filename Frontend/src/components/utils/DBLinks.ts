@@ -1,10 +1,10 @@
 import { GetUserDetails } from "./DbSchema"
 
-export const BaseURL = "https://localhost:7155/api/"
-// export const BaseURL = "https://localhost:5115/api/"
-// export const BaseURL = "https://sjc0spz8-5115.inc1.devtunnels.ms/api/"
+// export const BaseURL = "https://localhost:7155/api/"
+export const BaseURL = "http://localhost:5115/api/"
+// export const BaseURL = "https://sbkei4n8j543.share.zrok.io/api/"
 export const AIURL = "http://localhost:8000/api/"
-// export const AIURL = "http://localhost:8000/api/"
+// export const AIURL = "https://wia58rj0aot4.share.zrok.io/"
 
 
 export const AuthHeaders = {
@@ -13,6 +13,12 @@ export const AuthHeaders = {
         "Content-Type": "application/json",
     },
 }
+
+export enum Validate {
+    Get = "Validate",
+    Getpublic = "Validate/Apiworking"
+}
+
 
 
 export enum PyAiprompt {

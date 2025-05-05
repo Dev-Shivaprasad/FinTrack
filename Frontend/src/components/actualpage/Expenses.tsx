@@ -15,7 +15,6 @@ export default function ExpensesPage() {
       getUserId={GetUserDetails().user_id}
       fields={[
         {
-
           name: "category",
           label: "Category",
           type: "text",
@@ -43,7 +42,6 @@ export default function ExpensesPage() {
       idField="expenseId"
       displayFields={[
         {
-        
           name: "category",
           label: "Category",
         },
@@ -55,7 +53,7 @@ export default function ExpensesPage() {
         {
           name: "dateSpent",
           label: "Date Spent",
-          format : (value) => new Date(value).toDateString(),
+          format: (value) => new Date(value).toDateString(),
         },
         {
           name: "isFixed",

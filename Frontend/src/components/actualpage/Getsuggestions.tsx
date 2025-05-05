@@ -17,105 +17,105 @@ import Button from "../Button";
 import { TextLoop } from "../utils/textanim";
 
 export default function Getsuggestions() {
-  const [AiPromptData, setAiPromptData] = useState("");
-  const [AIResponsedata, setAIResponsedata] = useState({
+  const [promptData, setPromptData] = useState("");
+  const [aiResponse, setAiResponse] = useState({
     Suggestion: "",
     timegenerated: "",
   });
   const [error, setError] = useState("");
   const [loading, setLoading] = useState(false);
 
-  const getlocalAiresult = () => {
-    try {
-      const data = localStorage.getItem("Airesult");
-      return data ? JSON.parse(data) : null;
-    } catch (e) {
-      console.warn("Invalid JSON in localStorage");
-      return null;
-    }
+  const getCachedResult = () => {
+    const json = localStorage.getItem("Airesult");
+    return json ? JSON.parse(json) : null;
   };
 
-  const GetAiPrompt = () => {
-    return axios
-      .get(BaseURL + getpromptdata.Get + GetUserDetails().user_id, AuthHeaders)
+  const fetchPrompt = () =>
+    axios
+      .get(
+        `${BaseURL}${getpromptdata.Get}${GetUserDetails().user_id}`,
+        AuthHeaders
+      )
       .then((res) => {
-        setAiPromptData(res.data.promptData);
-        return res.data;
+        setPromptData(res.data.promptData);
+        return res.data.promptData;
       })
       .catch((err) => {
-        setError("Failed to fetch AI prompt data.");
         console.error(err);
+        setError("Failed to fetch AI prompt data.");
+        return null;
       });
-  };
 
-  const Airesult = () => {
-    const data = { Prompt: AiPromptData };
-    return axios
-      .post(AIURL + PyAiprompt.Post, data)
+  const fetchAIResponse = (prompt: string) =>
+    axios
+      .post(`${AIURL}${PyAiprompt.Post}`, { Prompt: prompt })
       .then((res) => {
         const result = res.data.message;
-        localStorage.setItem(
-          "Airesult",
-          JSON.stringify({
-            Suggestion: result,
-            timegenerated: GetCurrentDateTimeWithSecondsInString(),
-          })
-        );
-        setAIResponsedata(getlocalAiresult());
+        const responseData = {
+          Suggestion: result,
+          timegenerated: GetCurrentDateTimeWithSecondsInString(),
+        };
+        localStorage.setItem("Airesult", JSON.stringify(responseData));
+        setAiResponse(responseData);
       })
       .catch((err) => {
-        setError("Failed to fetch AI response.");
         console.error(err);
+        setError("Failed to fetch AI response.");
       });
-  };
-  function FetchAndPlaceAiSuggestions(force: boolean = false) {
-    setLoading(true);
-    const cached = getlocalAiresult();
 
-    if (cached && !force) {
-      setAIResponsedata(cached);
+  const handleSuggestionFetch = (force: boolean = false) => {
+    setLoading(true);
+    const cached = getCachedResult();
+
+    const load = async () => {
+      if (cached && !force) {
+        setAiResponse(cached);
+      } else {
+        localStorage.removeItem("Airesult");
+        const prompt = await fetchPrompt();
+        if (prompt) await fetchAIResponse(prompt);
+      }
       setLoading(false);
-    } else {
-      localStorage.removeItem("Airesult");
-      GetAiPrompt()
-        .then((prompt) => {
-          if (prompt) return Airesult();
-        })
-        .finally(() => setLoading(false));
-    }
-  }
+    };
+
+    load();
+  };
 
   useEffect(() => {
-    FetchAndPlaceAiSuggestions();
+    handleSuggestionFetch();
   }, []);
 
-  if (loading)
+  if (loading) {
     return (
       <TextLoop className="w-full h-full flex flex-col items-center mt-32">
-        <span>Analysing trasaction Data...</span>
+        <span>Analysing Portfolio Data...</span>
         <span>Loading suggestions...</span>
-        <span>Making sure suggestion is valid...</span>
         <span>Taking time...</span>
-        <span>Good things Take time... 😉</span>
+        <span>Good things take time... 😉</span>
+        <span>Making sure suggestion is valid...</span>
+        <span>Simplifying and beautifying...</span>
       </TextLoop>
     );
-  if (error) return <div className="text-red-600">{error}</div>;
+  }
+
+  if (error) {
+    return <div className="text-red-600">{error}</div>;
+  }
 
   return (
     <div className="p-2 flex flex-col items-center justify-center">
       <div className="m-2 p-2 text-xl text-yellow-200">
-        <span className="text-yellow-500">Suggestion Generated on : </span>
-        {AIResponsedata.timegenerated}
+        <span className="text-yellow-500">Suggestion Generated on: </span>
+        {aiResponse.timegenerated}
       </div>
       <Button
         title="Re-analyse Data"
         className="bg-text text-background"
-        action={() => FetchAndPlaceAiSuggestions(true)}
+        action={() => handleSuggestionFetch(true)}
       />
-
       <span className="gp text-lg">
         <ReactMarkdown remarkPlugins={[remarkGfm]} rehypePlugins={[rehypeRaw]}>
-          {AIResponsedata.Suggestion || "*No suggestions available.*"}
+          {aiResponse.Suggestion || "*No suggestions available.*"}
         </ReactMarkdown>
       </span>
     </div>

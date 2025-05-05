@@ -1,11 +1,11 @@
 import { jwtDecode } from "jwt-decode"
 
-export interface User {
+export interface UserDbSchema {
     userId: string;
     name: string;
     email: string;
     passwordHash: string;
-    createdAt: Date;
+    createdAt: Date | string;
 }
 
 export interface LoginDbSchema {
@@ -35,7 +35,8 @@ export interface InvestmentDbSchema {
 
 export interface ReportDBSchema {
     amount: number,
-    name: string
+    name: string,
+    fill?: string
 }
 
 export interface SavingsDbSchema {
@@ -84,7 +85,7 @@ export interface TransactionDbSchema {
     amount: number;
     transactionType: string;
     financeType: string;
-    createdAt: Date;
+    date: Date | string;
 }
 
 export type lspayload = {

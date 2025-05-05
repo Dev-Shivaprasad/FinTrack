@@ -3,6 +3,8 @@ from fastapi import FastAPI, Body
 from fastapi.middleware.cors import CORSMiddleware
 from AI import AnalyzeFinancialData
 from pydantic import BaseModel
+# from fastapi.middleware.httpsredirect import HTTPSRedirectMiddleware
+# from fastapi.middleware.trustedhost import TrustedHostMiddleware
 
 
 class Promptschema(BaseModel):
@@ -12,12 +14,15 @@ class Promptschema(BaseModel):
 app = FastAPI()
 
 app.add_middleware(
+    # TrustedHostMiddleware,
     CORSMiddleware,
+    # allowed_hosts=["*"],
     allow_origins=["*"],
     allow_credentials=True,
     allow_methods=["*"],
     allow_headers=["*"],
 )
+# app.add_middleware(HTTPSRedirectMiddleware)
 
 
 @app.get("/")

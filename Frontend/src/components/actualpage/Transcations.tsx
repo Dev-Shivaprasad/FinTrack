@@ -10,9 +10,9 @@ import { useEffect, useState } from "react";
 import { GetUserDetails, TransactionDbSchema } from "../utils/DbSchema";
 import axios from "axios";
 import { AuthHeaders, BaseURL, Transaction } from "../utils/DBLinks";
-import Downloadtopdf from "./Downloadtopdf";
 import { Drawer } from "../Modal";
 import Getsuggestions from "./Getsuggestions";
+import DownloadTrasactionTamplate from "./DownloadTrasactionTamplate";
 
 export default function Transactions() {
   const [transactionList, setTransactionList] = useState<TransactionDbSchema[]>(
@@ -145,7 +145,7 @@ export default function Transactions() {
             </motion.div>
           )}
         </AnimatePresence>
-        <Downloadtopdf />
+        <DownloadTrasactionTamplate />
         <Drawer
           Buttonname="Get Personalised AI suggestion"
           Elementtoshow={Getsuggestions}

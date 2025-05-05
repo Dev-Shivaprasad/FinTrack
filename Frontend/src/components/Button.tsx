@@ -9,6 +9,7 @@ type Buttonprops = {
   className?: string;
   action?: () => void;
   disabled?: boolean;
+  attributes?: any;
 };
 
 export default function Button({
@@ -18,12 +19,14 @@ export default function Button({
   action,
   link,
   disabled,
+  attributes,
 }: Buttonprops) {
   const navigate = useNavigate();
 
   return (
     <AnimatePresence>
       <motion.button
+        {...attributes}
         disabled={disabled}
         initial={{ scale: 1 }}
         whileHover={{ scale: 1.1 }}
@@ -35,7 +38,8 @@ export default function Button({
         }}
         className={cn(
           bgcolor ? "bg-secondary" : "bg-transparent border border-accent",
-          " rounded-lg p-2 w-fit cursor-pointer disabled:opacity-50",
+          " rounded-sm p-1 border border-primary/20 hover:border-primary/60 w-fit cursor-pointer disabled:opacity-50 text-sm",
+          "md:text-lg md:p-2 md:rounded-md",
 
           className
         )}

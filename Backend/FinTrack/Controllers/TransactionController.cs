@@ -65,6 +65,7 @@ public class TransactionController(DBcontext Transactiondb) : ControllerBase
                 Amount = t.Amount,
                 TransactionType = ((TransactionEnum.Transactionenum)t.TransactionType).ToString(),
                 FinanceType = t.FinanceType,
+                Date = t.CreatedAt,
             }).ToList();
 
             return Ok(transactionDtos);

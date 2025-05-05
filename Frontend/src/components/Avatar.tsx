@@ -33,6 +33,7 @@ const navitems = [
     Action: () => {
       CurrentSelectedTab("Home"),
         localStorage.removeItem("JwtToken"),
+        localStorage.removeItem("Airesult"),
         Goto({ Link: "/" });
     },
     textcolor: "",
