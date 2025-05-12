@@ -57,7 +57,7 @@ export default function BudgetsPage() {
         userId: "",
         monthYear: "",
         category: "",
-        allocatedAmount: 0,
+        allocatedAmount: null,
       }}
     />
   );

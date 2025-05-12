@@ -1,3 +1,4 @@
+import { Toaster } from "react-hot-toast";
 import Avatar from "./components/Avatar";
 import BudgetingTool from "./components/BudgetingTool";
 import Chart from "./components/Chart";
@@ -12,6 +13,7 @@ import UserFriendly from "./components/UserFriendly";
 export default function App() {
   return (
     <>
+      <Toaster />
       {localStorage.getItem("JwtToken") ? (
         <>
           <ThemeToggle className="absolute top-5 left-16 w-fit z-30 " />

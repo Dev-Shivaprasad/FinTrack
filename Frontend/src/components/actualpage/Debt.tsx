@@ -67,7 +67,7 @@ export default function DebtsPage() {
         },
         {
           name: "dueDate",
-          label: "TimeLeft",
+          label: "Time Left",
           format: (value) =>
             getTimeLeft(value).value + "  " + getTimeLeft(value).unit,
         },
@@ -75,8 +75,8 @@ export default function DebtsPage() {
       defaultValues={{
         userId: "",
         lender: "",
-        amountOwed: 0,
-        interestRate: 0,
+        amountOwed: null,
+        interestRate: null,
         dueDate: "",
       }}
       AudioSource={Debit}

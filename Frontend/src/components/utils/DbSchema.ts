@@ -17,8 +17,8 @@ export interface DebtDbSchema {
     debtId: string;
     userId: string;
     lender: string;
-    amountOwed: Number;
-    interestRate: Number;
+    amountOwed: Number | null;
+    interestRate: Number | null;
     dueDate: string; // ISO format (YYYY-MM-DD)
     createdAt: Date;
 }
@@ -28,7 +28,7 @@ export interface InvestmentDbSchema {
     userId: string;
     category: string,
     specficDetails: string,
-    amount: number;
+    amount: number | null;
     dateInvested: string; // ISO format (YYYY-MM-DD)
     createdAt: Date;
 }
@@ -43,8 +43,8 @@ export interface SavingsDbSchema {
     savingId: string;
     userId: string;
     goalName: string;
-    targetAmount: number;
-    currentAmount: number;
+    targetAmount: number | null;
+    currentAmount: number | null;
     createdAt: Date;
 }
 
@@ -54,7 +54,7 @@ export interface BudgetDbSchema {
     userId: string;
     monthYear: string;
     category: string;
-    allocatedAmount: number;
+    allocatedAmount: number | null;
     createdAt: Date;
 }
 
@@ -64,9 +64,9 @@ export interface ExpenseDbSchema {
     expenseId: string;
     userId: string;
     category: string;
-    amount: number;
+    amount: number | null;
     dateSpent: string; // ISO format (YYYY-MM-DD)
-    isFixed: boolean;
+    isFixed: boolean | null;
     createdAt: Date;
 }
 
@@ -74,8 +74,9 @@ export interface IncomeDbSchema {
     incomeId: string;
     userId: string;
     source: string;
-    amount: number;
+    amount: number | null;
     createdAt: Date;
+    isFixed: boolean
 }
 
 export interface TransactionDbSchema {

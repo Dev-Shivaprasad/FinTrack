@@ -11,7 +11,7 @@ import toast from "react-hot-toast";
 import Goto from "../utils/GOTO";
 import useSound from "use-sound";
 import { AuthHeaders } from "../utils/DBLinks";
-import { Vibrate } from "../utils/Helperfunction";
+import { sortByDate, Vibrate } from "../utils/Helperfunction";
 import { Credit } from "../utils/AudioSources";
 
 // Generic type for all financial data types
@@ -74,13 +74,17 @@ export default function DataManager<T extends FinancialData>({
   function fetchData() {
     axios
       .get(baseURL + endpoints.getByUserId + getUserId, AuthHeaders)
-      .then((response) => setData(response.data))
+      .then((response) => {
+        const sorted = sortByDate<T>(response.data, (item) => item.createdAt); // Replace 'date' with the correct field if different
+        setData(sorted);
+      })
       .catch((err) =>
         err.status === 401
           ? (toast("Your Session has expired please Re-Login"),
             localStorage.removeItem("JwtToken"),
+            localStorage.setItem("Relogin", true.toString()),
             Goto({ Link: "/" }))
-          : console.log(err)
+          : toast(err)
       );
   }
 
@@ -109,12 +113,11 @@ export default function DataManager<T extends FinancialData>({
   }
 
   function updateItem(item: T) {
+    // Create a copy of the item to modify
     const updatedItem = { ...item };
-    fields.forEach((field) => {
-      if (field.type === "boolean") {
-        (updatedItem as any)[field.name] = item[field.name] ? true : false;
-      }
-    });
+
+    // Fix: No need to convert boolean values here
+    // Just pass the item as is to the reset function
     reset(updatedItem as any);
     setUpdate({ state: true, id: item[idField] as string });
   }
@@ -127,6 +130,13 @@ export default function DataManager<T extends FinancialData>({
         processedData[field.name] = dateValue
           .toISOString()
           .split("T")[0] as any;
+      }
+      // Fix: Ensure boolean values are properly handled
+      if (field.type === "boolean") {
+        // Ensure boolean values are actually booleans and not strings
+        // Use type assertion to handle the TypeScript error
+        processedData[field.name] = (processedData[field.name] === true ||
+          processedData[field.name] === "true") as T[keyof T];
       }
     });
     processedData.userId = getUserId;
@@ -155,6 +165,7 @@ export default function DataManager<T extends FinancialData>({
 
     if (update.state) setUpdate({ state: false, id: null });
   };
+  // sortByDate(data, (dt) => datas..toString());
 
   return (
     <div className="min-h-screen flex flex-col justify-center bg-background p-4 sm:p-6 md:p-8 space-y-6">
@@ -231,7 +242,8 @@ export default function DataManager<T extends FinancialData>({
                             required: field.required
                               ? `${field.label} is required`
                               : false,
-                            setValueAs: (v) => (v === "true" ? true : false),
+                            // Fix: Ensure boolean values are properly set
+                            setValueAs: (v) => v === "true",
                           })}
                           className="w-full px-3 py-2 bg-secondary border-2 border-black rounded-lg shadow-[2px_2px_0px_0px_rgba(0,0,0,1)] focus:shadow-[4px_4px_0px_0px_rgba(0,0,0,1)] transition-all focus:outline-none"
                         >
@@ -351,9 +363,9 @@ export default function DataManager<T extends FinancialData>({
                 <div className="overflow-x-auto">
                   {/* Mobile View */}
                   <div className="md:hidden space-y-4">
-                    {data.map((item) => (
+                    {data.map((item, index) => (
                       <motion.div
-                        key={item[idField] as string}
+                        key={index}
                         initial={{ opacity: 0 }}
                         animate={{ opacity: 1 }}
                         exit={{ opacity: 0 }}
@@ -375,7 +387,7 @@ export default function DataManager<T extends FinancialData>({
                               onClick={() => {
                                 updateItem(item);
                               }}
-                              className="p-1 bg-blue-500 text-white border-_2px_0px_0px_rgba(0,0,0,1)] hover:shadow-[4px_4px_0px_0px_rgba(0,0,0,1)] transition-all active:shadow-[0px_0px_0px_0px_rgba(0,0,0,1)] active:translate-x-[4px] active:translate-y-[4px]"
+                              className="p-1 bg-blue-500 text-white border-2 border-black rounded-lg shadow-[2px_2px_0px_0px_rgba(0,0,0,1)] hover:shadow-[4px_4px_0px_0px_rgba(0,0,0,1)] transition-all active:shadow-[0px_0px_0px_0px_rgba(0,0,0,1)] active:translate-x-[4px] active:translate-y-[4px]"
                             >
                               <Pencil size={16} />
                             </button>
@@ -425,9 +437,9 @@ export default function DataManager<T extends FinancialData>({
                           <th className="px-6 py-3 text-left text-xs font-black text-text/70 uppercase tracking-wider">
                             {idField.toString()}
                           </th>
-                          {displayFields.map((field) => (
+                          {displayFields.map((field, idx) => (
                             <th
-                              key={field.name as string}
+                              key={`header-${field.name.toString()}-${idx}`}
                               className="px-6 py-3 text-left text-xs font-black text-text/70 uppercase tracking-wider"
                             >
                               {field.label}
@@ -439,9 +451,9 @@ export default function DataManager<T extends FinancialData>({
                         </tr>
                       </thead>
                       <tbody className="bg-white divide-y-2 divide-black">
-                        {data.map((item) => (
+                        {data.map((item, index) => (
                           <motion.tr
-                            key={item[idField] as string}
+                            key={index}
                             initial={{ opacity: 0 }}
                             animate={{ opacity: 1 }}
                             exit={{ opacity: 0 }}

@@ -49,23 +49,14 @@ public class ExpenseController(DBcontext Expensedb) : ControllerBase
 
     [HttpGet()]
     [Route("byuser/{UserId}")]
-    public async Task<ActionResult<ExpenseDto>> GetExpenseByUserId(Guid UserId)
+    public async Task<ActionResult<ExpenseModel>> GetExpenseByUserId(Guid UserId)
     {
         try
         {
             var expense = await Expensedb.Expenses.Where(id => id.UserId == UserId).ToListAsync();
             if (expense == null) return NotFound(new { message = "Expense record not found." });
 
-            var d = expense.Select(exp => new ExpenseDto()
-            {
-                UserId = exp.UserId,
-                Amount = exp.Amount,
-                CreatedAt = exp.CreatedAt,
-                ExpenseId = exp.ExpenseId,
-                IsFixed = exp.IsFixed ? "Yes" : "No",
-                Category = exp.Category,
-                DateSpent = exp.DateSpent,
-            }).ToList();
+            var d = expense.ToList();
             return Ok(d);
         }
         catch (Exception ex)

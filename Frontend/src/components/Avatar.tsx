@@ -1,5 +1,12 @@
 import { AnimatePresence, motion } from "motion/react";
-import { Dispatch, SetStateAction, useEffect, useRef, useState } from "react";
+import {
+  Dispatch,
+  JSX,
+  SetStateAction,
+  useEffect,
+  useRef,
+  useState,
+} from "react";
 import { cn } from "./utils/utils";
 import { User } from "lucide-react";
 import Goto from "./utils/GOTO";
@@ -78,7 +85,6 @@ const navitems = [
                 <button
                   className="bg-red-600 hover:bg-red-700 text-white font-bold py-1 px-2 rounded-xl cursor-pointer"
                   onClick={() => {
-                    // Perform delete action here
                     deleteuser();
                     toast.success("Item deleted successfully!");
                     toast.dismiss(t.id);
@@ -101,11 +107,17 @@ const navitems = [
   },
 ];
 
-export default function Avatar(props: { ClassName?: string }) {
-  return <AvatarDropdown ClassName={props.ClassName} />;
+export default function Avatar(props: {
+  ClassName?: string;
+  Icon?: JSX.Element | string;
+}) {
+  return <AvatarDropdown ClassName={props.ClassName} Icon={props.Icon} />;
 }
 
-const AvatarDropdown = (props: { ClassName?: string }) => {
+const AvatarDropdown = (props: {
+  ClassName?: string;
+  Icon?: JSX.Element | string;
+}) => {
   const [open, setOpen] = useState(false);
   const dropdownRef = useRef<HTMLDivElement>(null);
 
@@ -144,8 +156,8 @@ const AvatarDropdown = (props: { ClassName?: string }) => {
           }}
           className="flex items-center gap-2 rounded-md transition-colors "
         >
-          <span className="cursor-pointer text-2xl p-2 rounded-full bg-text">
-            <User className="text-accent" />
+          <span className="flex flex-col items-center justify-center cursor-pointer text-2xl p-2 text-accent h-10 w-h-10 font-Heading rounded-lg  bg-text">
+            {props.Icon ? props.Icon : <User />}
           </span>
           {/* <motion.span variants={iconVariants} className="cursor-pointer">
             <FiChevronDown />

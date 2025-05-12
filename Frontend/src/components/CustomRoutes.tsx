@@ -10,6 +10,7 @@ export default function Customroute() {
       <Router>
         <Routes>
           <Route path="/" element={<App />} />
+          
           <Route path="/auth" element={<LoginPage />} />
           {localStorage.getItem("JwtToken") ? (
             <Route path="/dashboard" element={<DashBoardApp />} />
@@ -17,6 +18,7 @@ export default function Customroute() {
             <Route path="/dashboard" element={<Dashboarderror />} />
           )}
           <Route path="*" element={<NotFound />} />
+
         </Routes>
       </Router>
     </>

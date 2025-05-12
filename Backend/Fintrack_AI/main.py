@@ -1,4 +1,5 @@
 
+import time
 from fastapi import FastAPI, Body
 from fastapi.middleware.cors import CORSMiddleware
 from AI import AnalyzeFinancialData
@@ -11,7 +12,8 @@ class Promptschema(BaseModel):
     Prompt: str
 
 
-app = FastAPI()
+app = FastAPI(docs_url=None)
+
 
 app.add_middleware(
     # TrustedHostMiddleware,
@@ -33,6 +35,7 @@ def DefaultRoute():
 @app.post("/api/AnalyzeFinancialData/")
 async def Analyse(data: Promptschema = Body(...)):
     # jsondata = json.loads(data.Prompt)
+    start = time.perf_counter()
     prompt = f"""You are a smart and helpful financial advisor.
     Analyze the user's financial data below and suggest improvements to help them make better economic decisions
     Financial Data:
@@ -42,6 +45,9 @@ async def Analyse(data: Promptschema = Body(...)):
 
     RES = await AnalyzeFinancialData(prompt=prompt)
     print(f"Successful!!!")
+    end = time.perf_counter()
+    execution_time = end - start
+    print(f"Suggestion generated in : {execution_time:.4f} seconds")
     return RES
 
 

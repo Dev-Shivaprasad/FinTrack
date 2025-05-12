@@ -56,14 +56,15 @@ export default function SavingsPage() {
         {
           name: "currentAmount",
           label: "goal amount to collect",
-          format: (value, row) => ((row?.targetAmount || 0) - value).toLocaleString(),
+          format: (value, row) =>
+            ((row?.targetAmount || 0) - value).toLocaleString(),
         },
       ]}
       defaultValues={{
         userId: "",
         goalName: "",
-        targetAmount: 0,
-        currentAmount: 0,
+        targetAmount: null,
+        currentAmount: null,
       }}
     />
   );

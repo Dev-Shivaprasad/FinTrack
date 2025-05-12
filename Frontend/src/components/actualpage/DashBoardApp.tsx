@@ -93,9 +93,7 @@ const Sidebar = ({
         )}
       >
         <TitleSection open={open} />
-        <div
-          className="flex flex-col flex-wrap w-full"
-        >
+        <div className="flex flex-col flex-wrap w-full gap-2">
           <Option
             Icon={FiHome}
             title="Home"
@@ -246,7 +244,11 @@ const TitleSection = ({ open }: { open: boolean }) => {
                   ? GetUserDetails().user_name.slice(0, 17) + "..."
                   : GetUserDetails().user_name}
               </span>
-              <span className="block text-xs text-slate-500">beta</span>
+              <span className="block text-xs text-slate-500">
+                {GetUserDetails().user_id.length >= 17
+                  ? GetUserDetails().user_id.slice(0, 17).toUpperCase() + "..."
+                  : GetUserDetails().user_id.toUpperCase()}
+              </span>
             </motion.div>
           )}
         </div>
@@ -261,11 +263,12 @@ const Logo = () => {
   return (
     <motion.div
       layout
-      className="grid text-xl font-Heading size-10 shrink-0 place-content-center rounded-md bg-accent"
+      className="grid text-xl font-Heading size-10 shrink-0 place-content-center rounded-md text-accent bg-text"
     >
       {/* <img width="24" height="auto" className="fill-slate-50"></img> */}
       {GetUserDetails().user_name[0].toUpperCase() || "U"}
     </motion.div>
+    // <Avatar Icon={GetUserDetails().user_name[0].toUpperCase()} ClassName="absolute right-20" />
   );
 };
 

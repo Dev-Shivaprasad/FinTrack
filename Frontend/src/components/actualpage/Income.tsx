@@ -1,5 +1,5 @@
 import { BaseURL, Income } from "../utils/DBLinks";
-import {  GetUserDetails, IncomeDbSchema } from "../utils/DbSchema";
+import { GetUserDetails, IncomeDbSchema } from "../utils/DbSchema";
 import DataManager from "./DataManager";
 
 export default function IncomesPage() {
@@ -28,6 +28,11 @@ export default function IncomesPage() {
           required: true,
           min: 0,
         },
+        {
+          name: "isFixed",
+          label: "Fixed Income",
+          type: "boolean",
+        },
       ]}
       idField="incomeId"
       displayFields={[
@@ -41,15 +46,21 @@ export default function IncomesPage() {
           format: (value) => `₹ ${value.toLocaleString()}`,
         },
         {
+          name: "isFixed",
+          label: "Fixed Income",
+          format: (value) => (value ? "Yes" : "No"),
+        },
+        {
           name: "createdAt",
           label: "Date",
-          format : (value) => new Date(value).toDateString()
+          format: (value) => new Date(value).toDateString(),
         },
       ]}
       defaultValues={{
         userId: "",
         source: "",
-        amount: 0,
+        amount: null,
+        isFixed: false,
       }}
     />
   );

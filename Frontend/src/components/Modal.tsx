@@ -1,4 +1,9 @@
-import { Dispatch, ReactNode, SetStateAction, useState } from "react";
+import {
+  Dispatch,
+  ReactNode,
+  SetStateAction,
+  useState,
+} from "react";
 import useMeasure from "react-use-measure";
 import {
   useDragControls,
@@ -77,7 +82,7 @@ const DragCloseDrawer = ({ open, setOpen, children }: Props) => {
             transition={{
               ease: "easeInOut",
             }}
-            className={`absolute bottom-0 h-[90vh] lg:h-[85vh] w-full overflow-hidden rounded-t-3xl bg-secondary`}
+            className={`absolute bottom-0 h-[90vh] w-full overflow-hidden rounded-t-3xl bg-secondary`}
             style={{ y }}
             drag="y"
             dragControls={controls}

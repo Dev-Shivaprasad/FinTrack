@@ -17,7 +17,7 @@ import Button from "../Button";
 import { TextLoop } from "../utils/textanim";
 
 export default function Getsuggestions() {
-  const [promptData, setPromptData] = useState("");
+  const [_, setPromptData] = useState("");
   const [aiResponse, setAiResponse] = useState({
     Suggestion: "",
     timegenerated: "",

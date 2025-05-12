@@ -13,13 +13,13 @@ import { AuthHeaders, BaseURL, Transaction } from "../utils/DBLinks";
 import { Drawer } from "../Modal";
 import Getsuggestions from "./Getsuggestions";
 import DownloadTrasactionTamplate from "./DownloadTrasactionTamplate";
+import normaldatetime from "../utils/Normaldatetime";
+import { sortByDate } from "../utils/Helperfunction";
 
 export default function Transactions() {
   const [transactionList, setTransactionList] = useState<TransactionDbSchema[]>(
     []
   );
-
-  transactionList.reverse();
 
   useEffect(() => {
     axios
@@ -31,7 +31,7 @@ export default function Transactions() {
   }, []);
 
   const [isTableCollapsed, setIsTableCollapsed] = useState(false);
-
+  sortByDate(transactionList, (data) => data.date.toString());
   return (
     <motion.div
       initial={{ opacity: 0, y: 20 }}
@@ -105,6 +105,9 @@ export default function Transactions() {
                         <th className="px-6 py-3 text-left text-xs font-black text-text/70 uppercase tracking-wider">
                           Actions
                         </th>
+                        <th className="px-6 py-3 text-left text-xs font-black text-text/70 uppercase tracking-wider">
+                          Date
+                        </th>
                       </tr>
                     </thead>
                     <tbody className="bg-white divide-y-2 divide-black">
@@ -135,6 +138,9 @@ export default function Transactions() {
                             ) : (
                               <ArrowUpRight className="text-red-500 border rounded-full " />
                             )}
+                          </td>
+                          <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-500">
+                            {normaldatetime(item.date.toLocaleString())}
                           </td>
                         </motion.tr>
                       ))}

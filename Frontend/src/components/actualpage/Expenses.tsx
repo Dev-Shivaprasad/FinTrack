@@ -1,6 +1,7 @@
-import { BaseURL, Expense } from "../utils/DBLinks";
-import { ExpenseDbSchema, GetUserDetails } from "../utils/DbSchema";
 import DataManager from "./DataManager";
+import { ExpenseDbSchema, GetUserDetails } from "../utils/DbSchema";
+import { BaseURL, Expense } from "../utils/DBLinks";
+
 export default function ExpensesPage() {
   return (
     <DataManager<ExpenseDbSchema>
@@ -31,11 +32,10 @@ export default function ExpensesPage() {
           name: "dateSpent",
           label: "Date Spent",
           type: "date",
-          required: true,
         },
         {
           name: "isFixed",
-          label: "Is Fixed Expense",
+          label: "Fixed Expense",
           type: "boolean",
         },
       ]}
@@ -44,6 +44,7 @@ export default function ExpensesPage() {
         {
           name: "category",
           label: "Category",
+          format: (value) => value,
         },
         {
           name: "amount",
@@ -51,22 +52,21 @@ export default function ExpensesPage() {
           format: (value) => `₹ ${value.toLocaleString()}`,
         },
         {
-          name: "dateSpent",
-          label: "Date Spent",
-          format: (value) => new Date(value).toDateString(),
+          name: "isFixed",
+          label: "Fixed Income",
+          format: (value) => (value ? "Yes" : "No"),
         },
         {
-          name: "isFixed",
-          label: "Fixed Expense",
-          format: (value) => value,
+          name: "createdAt",
+          label: "Date",
+          format: (value) => new Date(value).toDateString(),
         },
       ]}
       defaultValues={{
         userId: "",
         category: "",
-        amount: 0,
-        dateSpent: "",
-        isFixed: false,
+        amount: null,
+        isFixed: null,
       }}
     />
   );

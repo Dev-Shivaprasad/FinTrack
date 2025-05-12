@@ -17,7 +17,7 @@ export default function ThemeToggle({
 }) {
   // Load theme from localStorage or default to "dark"
   const [theme, setTheme] = useState<ThemeType>(
-    () => (localStorage.getItem("theme") as ThemeType) || "dark"
+    () => (localStorage.getItem("theme") as ThemeType) || "light"
   );
 
   useEffect(() => {
@@ -50,7 +50,7 @@ const SliderToggle = ({
     <div className="border-1  border-primary/20 hover:border-primary/80 select-none relative flex w-fit items-center rounded-full bg-background text-text">
       <button
         className={`${TOGGLE_CLASSES} ${
-          theme === "light" ? "text-white" : "text-slate-300"
+          theme === "light" ? "text-text" : "text-text"
         }`}
         onClick={() => setTheme("light")}
       >

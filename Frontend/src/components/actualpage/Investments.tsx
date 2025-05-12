@@ -79,7 +79,7 @@ export default function InvestmentsPage() {
         userId: "",
         category: "",
         specficDetails: "",
-        amount: 0,
+        amount: null,
         dateInvested: "",
       }}
     />

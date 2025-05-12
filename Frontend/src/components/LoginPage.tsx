@@ -16,7 +16,6 @@ type FormData = {
   confirmPassword?: string;
 };
 
-
 const AuthForm: React.FC = () => {
   useEffect(() => {
     loadtheme();
@@ -39,6 +38,7 @@ const AuthForm: React.FC = () => {
           })
           .then((da) => {
             localStorage.setItem("JwtToken", da.data.jwtToken);
+            localStorage.setItem("Relogin", false.toString());
             return da;
           })
           .then((msg) => toast(msg.data.message))
@@ -62,7 +62,7 @@ const AuthForm: React.FC = () => {
           })
           .catch((err) => {
             toast.error(
-              `Something Went Boom : ${
+              `Something Went Wrong : ${
                 err.status === 400 ? err.response.data.message : err
               }`
             ),

@@ -1,5 +1,14 @@
+
 export function Vibrate(sec: number = 250) {
     navigator.vibrate(sec)
+}
+// Helperfunction.ts
+export function sortByDate<T>(items: T[], getDate: (item: T) => string): T[] {
+  return items.sort((a, b) => {
+    const dateA = new Date(getDate(a)).getTime();
+    const dateB = new Date(getDate(b)).getTime();
+    return dateB - dateA;
+  });
 }
 
 
@@ -18,3 +27,9 @@ export function GetCurrentDateTimeWithSecondsInString() {
 
     return `(${date}-${month}-${year})  ${hr}:${min}:${sec}.${ms} ${period}`
 }
+
+
+// export function ValidateJwtToken() {
+//     localStorage.getItem("Relogin") === "true" ? toast("Your Session has expired please Re-Login")
+//         : null;
+// }
