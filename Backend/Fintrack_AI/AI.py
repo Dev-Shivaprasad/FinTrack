@@ -1,7 +1,7 @@
 from gpt4all import GPT4All
 import time
 
-MODEL_PATH = r"M:\0~CODEBASE\All_AI_Models\phi-2-orange-v2.Q8_0.gguf"
+MODEL_PATH = r"I:\FinTrack\Backend\Fintrack_AI\Models\phi-2-orange.Q8_0.gguf"
 
 try:
     model = GPT4All(model_name=MODEL_PATH, device="cuda",

@@ -42,7 +42,9 @@ export default function Getsuggestions() {
       })
       .catch((err) => {
         console.error(err);
-        setError("Failed to fetch AI prompt data.");
+        setError(
+          "Failed to fetch AI prompt data. \n\n Due to high AI deployment costs, we're using Zrok for hosting our AI service. As a result, AI inferencing may not be available 24/7. Thank you for your understanding!"
+        );
         return null;
       });
 
@@ -99,7 +101,11 @@ export default function Getsuggestions() {
   }
 
   if (error) {
-    return <div className="text-red-600">{error}</div>;
+    return (
+      <div className="text-red-400 text-2xl h-[50vh] italic flex text-center items-center justify-center">
+        {error}
+      </div>
+    );
   }
 
   return (

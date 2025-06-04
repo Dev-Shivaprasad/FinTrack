@@ -1,9 +1,10 @@
 import { GetUserDetails } from "./DbSchema"
 
 // export const BaseURL = "https://localhost:7155/api/"
-export const BaseURL = "http://localhost:5115/api/"
+export const BaseURL = import.meta.env.VITE_BACKEND_URL + "api/"
+// export const BaseURL = "http://localhost:5115/api/"
 // export const BaseURL = "https://sbkei4n8j543.share.zrok.io/api/"
-export const AIURL = "http://localhost:8000/api/"
+export const AIURL = import.meta.env.VITE_AIBACKEND_URL + "api/"
 // export const AIURL = "https://wia58rj0aot4.share.zrok.io/"
 
 

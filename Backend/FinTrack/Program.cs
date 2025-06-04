@@ -29,7 +29,8 @@ builder.Services.AddAuthentication(JwtBearerDefaults.AuthenticationScheme)
 builder.Services.AddDbContext<DBcontext>(opt =>
 {
     // opt.UseSqlServer(builder.Configuration.GetConnectionString("DBDESK"));
-    opt.UseSqlServer(builder.Configuration.GetConnectionString("DBLAP"));
+    opt.UseSqlServer(builder.Configuration.GetConnectionString("online"));
+    // opt.UseSqlServer(builder.Configuration.GetConnectionString("DBLAP"));
 });
 
 builder.Services.AddAuthorization();
