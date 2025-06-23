@@ -1,4 +1,6 @@
 import { motion } from "motion/react";
+import { cn } from "./utils/utils";
+import { Savings_Goals } from "./utils/Landingpagemedia";
 
 const SavingGoal = () => {
   return (
@@ -8,7 +10,9 @@ const SavingGoal = () => {
           style={{
             backgroundPosition: "center",
           }}
-          className="w-screen h-[50vh]  bg-[url('./assets/images/Savings_Goals.jpg')] bg-no-repeat bg-cover text-accent"
+          className={cn(
+            `w-screen h-[50vh]  bg-[url('${Savings_Goals}')] bg-no-repeat bg-cover text-accent`
+          )}
         >
           <div className="h-full w-full  bg-gradient-to-t from-secondary via-transparent to-transparent md:bg-gradient-to-l  " />
         </div>

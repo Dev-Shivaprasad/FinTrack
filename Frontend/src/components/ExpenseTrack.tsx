@@ -1,5 +1,6 @@
 import { ShoppingCart, Utensils, Bus, Calendar } from "lucide-react";
 import { motion } from "motion/react";
+import { Expense_Tracking } from "./utils/Landingpagemedia";
 
 export default function ExpenseTracking() {
   return (
@@ -45,7 +46,7 @@ export default function ExpenseTracking() {
         <div
           className="absolute inset-0 bg-no-repeat bg-cover"
           style={{
-            backgroundImage: "url('./src/assets/images/Expense.jpg')",
+            backgroundImage: `url(${Expense_Tracking})`,
           }}
         />
         {/* Overlay for better text contrast */}

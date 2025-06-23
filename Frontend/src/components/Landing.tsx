@@ -1,10 +1,11 @@
 import Button from "./Button";
+import { landing } from "./utils/Landingpagemedia";
 
 export default function Landing() {
   return (
     <>
       <img
-        src="./Landing-page.jpg"
+        src={landing}
         className=" h-[50vh] w-full opacity-10 object-cover absolute -z-10"
       />
       <div className="h-[50vh] w-full flex flex-col  justify-center lg:items-center mx-auto ">

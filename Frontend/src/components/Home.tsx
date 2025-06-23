@@ -1,13 +1,14 @@
 import { motion } from "motion/react";
 import Button from "./Button";
 import { Vibrate } from "./utils/Helperfunction";
+import { landing } from "./utils/Landingpagemedia";
 const Finance = () => {
   return (
     <>
       <div className="relative w-full h-screen flex items-center justify-center bg-black ">
         <div className="absolute inset-0 bg-cover bg-black opacity-30">
           <video
-            src="./src/assets/images/landing.mp4"
+            src={landing}
             className="w-full h-screen object-cover"
             loop
             autoPlay

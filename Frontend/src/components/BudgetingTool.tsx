@@ -1,4 +1,6 @@
 import { motion } from "motion/react";
+import { cn } from "./utils/utils";
+import { Budgeting_Tools } from "./utils/Landingpagemedia";
 
 export default function BudgetingTool() {
   return (
@@ -41,7 +43,9 @@ export default function BudgetingTool() {
             style={{
               backgroundPosition: "center",
             }}
-            className="bg-no-repeat bg-cover text-accent bg-[url('./assets/images/Budgeting_Tools.jpg')] h-full w-full rounded-r-2xl"
+            className={cn(
+              `bg-no-repeat bg-cover text-accent bg-[url('${Budgeting_Tools}')] h-full w-full rounded-r-2xl`
+            )}
           >
             <div className="absolute inset-0 bg-gradient-to-b from-secondary via-transparent to-transparent md:bg-gradient-to-r " />
           </div>
